@@ -8,6 +8,8 @@ type Profile = {
   plan: "free" | "plus";
   subscription_status: string | null;
   current_period_end: string | null;
+  email_reminders: boolean;
+  timezone: string;
 };
 
 type Household = {
@@ -46,7 +48,7 @@ export default function SettingsPage() {
     const [{ data: p, error: pError }, { data: membership, error: mError }] = await Promise.all([
       supabase
         .from("profiles")
-        .select("plan,subscription_status,current_period_end")
+        .select("plan,subscription_status,current_period_end,email_reminders,timezone")
         .eq("user_id", currentUserId)
         .single(),
       supabase
@@ -158,8 +160,25 @@ export default function SettingsPage() {
 
   async function copyInvite() {
     if (!household?.invite_code) return;
-    await navigator.clipboard.writeText(household.invite_code);
-    setFamilyMessage("Invite code copied.");
+    const link = `${window.location.origin}/join/${household.invite_code}`;
+    await navigator.clipboard.writeText(link);
+    setFamilyMessage("Family invite link copied.");
+  }
+
+  async function updateReminders(enabled: boolean) {
+    setError("");
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "America/Chicago";
+      const { error: prefError } = await supabase.rpc("set_profile_preferences", {
+        p_email_reminders: enabled,
+        p_timezone: timezone,
+      });
+      if (prefError) throw prefError;
+      setProfile((current) => current ? { ...current, email_reminders: enabled, timezone } : current);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not update reminder settings.");
+    }
   }
 
   const plus = profile?.plan === "plus" && ["active", "trialing"].includes(profile.subscription_status ?? "");
@@ -199,6 +218,26 @@ export default function SettingsPage() {
           <a className="button primary full" href="/app/upgrade">Upgrade to Plus</a>
         )}
 
+        <section className="settingsSubsection">
+          <div className="familySectionHead">
+            <div>
+              <p className="eyebrow">Reminders</p>
+              <h2>Email reminders</h2>
+            </div>
+          </div>
+          <label className="toggleCard">
+            <div>
+              <strong>Email me when something is due</strong>
+              <p>One reminder when a scheduled item becomes due or overdue.</p>
+            </div>
+            <input
+              type="checkbox"
+              checked={profile?.email_reminders ?? true}
+              onChange={(event) => updateReminders(event.target.checked)}
+            />
+          </label>
+        </section>
+
         <section className="familySection">
           <div className="familySectionHead">
             <div>
@@ -219,7 +258,7 @@ export default function SettingsPage() {
               <div className="inviteBox">
                 <span>Invite code</span>
                 <strong>{household.invite_code.toUpperCase()}</strong>
-                <button type="button" className="button ghost" onClick={copyInvite}>Copy code</button>
+                <button type="button" className="button ghost" onClick={copyInvite}>Copy invite link</button>
               </div>
             </div>
           ) : (
