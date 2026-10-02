@@ -46,6 +46,28 @@ export default function LoginPage() {
     }
   }
 
+  async function sendPasswordReset() {
+    if (!email.trim()) {
+      setError("Enter your email address first.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (resetError) throw resetError;
+      setMessage("Password reset email sent. Check your inbox.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send password reset email.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -105,6 +127,11 @@ export default function LoginPage() {
           <button className="button primary full" disabled={busy} type="submit">
             {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
           </button>
+          {mode === "signin" && (
+            <button type="button" className="textButton resetLink" onClick={sendPasswordReset} disabled={busy}>
+              Forgot password?
+            </button>
+          )}
         </form>
 
         <button className="textButton" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); setMessage(""); }}>
