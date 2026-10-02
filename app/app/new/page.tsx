@@ -35,6 +35,15 @@ const presets = [
   ["month", 3, "Every 3 months"], ["month", 6, "Every 6 months"], ["year", 1, "Every year"],
 ] as const;
 
+const quickAdds = [
+  { title: "Change furnace filter", category: "home", unit: "month", value: 3, emoji: "🏠" },
+  { title: "Oil change", category: "vehicle", unit: "month", value: 6, emoji: "🚗" },
+  { title: "Give pet medication", category: "pet", unit: "month", value: 1, emoji: "🐕" },
+  { title: "Haircut", category: "personal", unit: "month", value: 2, emoji: "✂️" },
+  { title: "Change water filter", category: "home", unit: "month", value: 6, emoji: "💧" },
+  { title: "Test smoke detectors", category: "home", unit: "month", value: 6, emoji: "🚨" },
+] as const;
+
 export default function NewTrackerPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -109,6 +118,13 @@ export default function NewTrackerPage() {
 
   function choosePreset(unit: string, value: number) { setFrequencyUnit(unit); setFrequencyValue(value); }
 
+  function chooseQuickAdd(item: typeof quickAdds[number]) {
+    setTitle(item.title);
+    setCategory(item.category);
+    setFrequencyUnit(item.unit);
+    setFrequencyValue(item.value);
+  }
+
   function startVoiceInput() {
     if (typeof window === "undefined") return;
 
@@ -154,6 +170,17 @@ export default function NewTrackerPage() {
       <section className="formPage">
         <p className="eyebrow">Add something</p><h1>What do you want to remember?</h1>
         <form className="trackerForm" onSubmit={submit}>
+          <fieldset>
+            <legend>Quick add</legend>
+            <div className="quickAddGrid">
+              {quickAdds.map((item) => (
+                <button type="button" className="quickAdd" key={item.title} onClick={() => chooseQuickAdd(item)}>
+                  <span>{item.emoji}</span>
+                  <strong>{item.title}</strong>
+                </button>
+              ))}
+            </div>
+          </fieldset>
           <label>
             Thing to remember
             <div className="voiceInputWrap">
