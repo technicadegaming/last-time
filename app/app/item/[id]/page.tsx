@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "../../../../lib/supabase";
 import { formatDate, nextDueText, recurrenceText, relativeTime, type FrequencyUnit } from "../../../../lib/date";
 
-type Tracker = { id:string; title:string; category:string; emoji:string; frequency_unit:FrequencyUnit; frequency_value:number; last_done_at:string|null; };
+type Tracker = { id:string; title:string; category:string; emoji:string; frequency_unit:FrequencyUnit; frequency_value:number; last_done_at:string|null; user_id:string; household_id:string|null; };
 type Occurrence = { id:string; completed_at:string; note:string|null; };
 
 const categories = [["home","🏠","Home"],["vehicle","🚗","Vehicle"],["pet","🐕","Pet"],["personal","✂️","Personal"],["yard","🌱","Yard"],["tech","💻","Tech"],["other","↺","Other"]] as const;
@@ -16,6 +16,7 @@ export default function TrackerDetailPage() {
   const id = params.id;
   const [tracker, setTracker] = useState<Tracker|null>(null);
   const [history, setHistory] = useState<Occurrence[]>([]);
+  const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -27,8 +28,9 @@ export default function TrackerDetailPage() {
     try {
       const supabase = getSupabaseBrowserClient();
       const { data: session } = await supabase.auth.getSession(); if (!session.session) { router.replace("/login"); return; }
+      setUserId(session.session.user.id);
       const [{ data: item, error: itemError }, { data: events, error: historyError }] = await Promise.all([
-        supabase.from("trackers").select("id,title,category,emoji,frequency_unit,frequency_value,last_done_at").eq("id", id).single(),
+        supabase.from("trackers").select("id,title,category,emoji,frequency_unit,frequency_value,last_done_at,user_id,household_id").eq("id", id).single(),
         supabase.from("occurrences").select("id,completed_at,note").eq("tracker_id", id).order("completed_at", { ascending:false }).limit(50),
       ]);
       if (itemError) throw itemError; if (historyError) throw historyError;
@@ -74,7 +76,7 @@ export default function TrackerDetailPage() {
     <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ Last Time</a></header>
     {error && <div className="formError dashboardMessage">{error}</div>}
     <section className="detailHero">
-      <div className="detailIcon">{tracker.emoji}</div><p className="eyebrow">{tracker.category}</p><h1>{tracker.title}</h1>
+      <div className="detailIcon">{tracker.emoji}</div><p className="eyebrow">{tracker.category}{tracker.household_id ? " · Family" : ""}</p><h1>{tracker.title}</h1>
       <div className="lastAnswer"><strong>{relativeTime(tracker.last_done_at)}</strong><span>{formatDate(tracker.last_done_at)}</span></div>
       <div className="detailDue"><strong>{nextDueText(tracker.last_done_at, tracker.frequency_unit, tracker.frequency_value)}</strong><span>{recurrenceText(tracker.frequency_unit, tracker.frequency_value)}</span></div>
       <button className="button doneBig" onClick={markDone} disabled={busy}>✓ {busy ? "Saving…" : "Did it again"}</button>
@@ -92,6 +94,6 @@ export default function TrackerDetailPage() {
       <button className="button primary full" disabled={busy || !title.trim()}>{busy ? "Saving…" : "Save changes"}</button>
     </form></section>}
 
-    <section className="dangerActions"><button onClick={archive}>Archive</button><button className="danger" onClick={remove}>Delete permanently</button></section>
+    {tracker.user_id === userId && <section className="dangerActions"><button onClick={archive}>Archive</button><button className="danger" onClick={remove}>Delete permanently</button></section>}
   </main>;
 }
