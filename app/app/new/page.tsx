@@ -43,6 +43,8 @@ export default function NewTrackerPage() {
   const [frequencyUnit, setFrequencyUnit] = useState("none");
   const [frequencyValue, setFrequencyValue] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [householdId, setHouseholdId] = useState<string | null>(null);
+  const [shareWithFamily, setShareWithFamily] = useState(false);
   const [listening, setListening] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [error, setError] = useState("");
@@ -58,7 +60,18 @@ export default function NewTrackerPage() {
 
     try {
       const supabase = getSupabaseBrowserClient();
-      supabase.auth.getSession().then(({ data }) => { if (!data.session) router.replace("/login"); });
+      supabase.auth.getSession().then(async ({ data }) => {
+        if (!data.session) {
+          router.replace("/login");
+          return;
+        }
+        const { data: membership } = await supabase
+          .from("household_members")
+          .select("household_id")
+          .eq("user_id", data.session.user.id)
+          .maybeSingle();
+        if (membership?.household_id) setHouseholdId(membership.household_id);
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Supabase is not configured.");
     }
@@ -76,6 +89,7 @@ export default function NewTrackerPage() {
       const { data: tracker, error: insertError } = await supabase.from("trackers").insert({
         user_id: authData.user.id, title: title.trim(), category, emoji: selected[1], last_done_at: timestamp,
         frequency_unit: frequencyUnit, frequency_value: frequencyValue,
+        household_id: shareWithFamily && householdId ? householdId : null,
       }).select("id").single();
       if (insertError) {
         if (insertError.message.includes("FREE_LIMIT_REACHED")) { router.replace("/app/upgrade?limit=1"); return; }
@@ -159,6 +173,27 @@ export default function NewTrackerPage() {
             </div>
             {voiceSupported && <span className="voiceHint">{listening ? "Say what you want Last Time to remember." : "Or tap Speak and say it out loud."}</span>}
           </label>
+          {householdId && (
+            <fieldset>
+              <legend>Who is this for?</legend>
+              <div className="shareChoiceGrid">
+                <button
+                  type="button"
+                  className={`preset ${!shareWithFamily ? "selected" : ""}`}
+                  onClick={() => setShareWithFamily(false)}
+                >
+                  👤 Just me
+                </button>
+                <button
+                  type="button"
+                  className={`preset ${shareWithFamily ? "selected" : ""}`}
+                  onClick={() => setShareWithFamily(true)}
+                >
+                  👨‍👩‍👧‍👦 Share with family
+                </button>
+              </div>
+            </fieldset>
+          )}
           <fieldset><legend>Category</legend><div className="categoryGrid">
             {categories.map(([key, emoji, label]) => <label className={`categoryChoice ${category === key ? "selected" : ""}`} key={key}><input type="radio" name="category" value={key} checked={category === key} onChange={() => setCategory(key)} /><span>{emoji}</span><strong>{label}</strong></label>)}
           </div></fieldset>
