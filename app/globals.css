@@ -56,3 +56,24 @@
 .trackerTitleRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .sharedBadge{font-size:9px;padding:4px 7px}
 @media(max-width:700px){.familySetupGrid{grid-template-columns:1fr}.inviteBox{grid-template-columns:1fr}.inviteBox .button{width:100%}.shareChoiceGrid{grid-template-columns:1fr}}
+
+
+/* LT-011 helpful launch polish */
+.resetLink{margin-top:-6px}
+.trackerGroups{display:flex;flex-direction:column;gap:8px;margin-bottom:42px}
+.trackerGroup{margin:6px 0 12px}
+.trackerGroup.overdue .panelTitle h2{color:#a2382c}
+.trackerGroup.soon .panelTitle h2{color:#9a6500}
+.trackerGroup.later .panelTitle h2{color:var(--ink)}
+.trackerGroup.unscheduled .panelTitle h2{color:var(--muted)}
+.quickAddGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.quickAdd{border:1px solid var(--line);background:white;border-radius:13px;padding:12px 10px;display:flex;align-items:center;gap:9px;text-align:left;font:inherit;cursor:pointer;color:var(--ink)}
+.quickAdd:hover{border-color:#9fc6ae;background:#f8fbf9}
+.quickAdd span{font-size:20px}
+.quickAdd strong{font-size:12px;line-height:1.25}
+.settingsSubsection{margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
+.toggleCard{background:white;border:1px solid var(--line);border-radius:18px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer}
+.toggleCard>div{display:flex;flex-direction:column;gap:4px}
+.toggleCard p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+.toggleCard input{width:20px;height:20px;accent-color:var(--accent)}
+@media(max-width:700px){.quickAddGrid{grid-template-columns:1fr 1fr}}
