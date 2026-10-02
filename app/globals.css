@@ -34,3 +34,25 @@
 .voiceButton.listening{border-color:#71ad88;background:var(--accent2);color:#155f3b}
 .voiceHint{font-size:12px;color:var(--muted);font-weight:500}
 @media(max-width:560px){.voiceInputWrap{flex-direction:column}.voiceButton{min-height:44px}}
+
+
+/* LT-010 family sharing */
+.familySection{margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
+.familySectionHead{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:14px}
+.familySectionHead .eyebrow{margin:0 0 5px}
+.familySectionHead h2{margin:0;font-size:24px}
+.familyBadge,.sharedBadge{display:inline-flex;align-items:center;border-radius:999px;background:var(--accent2);color:#155f3b;font-size:10px;font-weight:900;letter-spacing:.04em;padding:5px 8px}
+.familyCard{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.familyCard>div:first-child{display:flex;flex-direction:column;gap:5px}
+.familyCard p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.familyLabel{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:850}
+.familySetupGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.familyCard input{width:100%;border:1px solid var(--line);background:white;border-radius:13px;padding:13px 14px;font:inherit;color:var(--ink);outline:none}
+.familyCard input:focus{border-color:#8ebca1;box-shadow:0 0 0 3px rgba(31,122,77,.09)}
+.inviteBox{border-top:1px solid var(--line);padding-top:14px;display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center}
+.inviteBox span{font-size:12px;color:var(--muted)}
+.inviteBox strong{font-size:18px;letter-spacing:.12em}
+.shareChoiceGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.trackerTitleRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sharedBadge{font-size:9px;padding:4px 7px}
+@media(max-width:700px){.familySetupGrid{grid-template-columns:1fr}.inviteBox{grid-template-columns:1fr}.inviteBox .button{width:100%}.shareChoiceGrid{grid-template-columns:1fr}}
