@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cleanAuthFragment, getSupabaseBrowserClient } from "../../lib/supabase";
-import { nextDueText, relativeTime, type FrequencyUnit } from "../../lib/date";
+import { daysUntilDue, nextDueText, relativeTime, type FrequencyUnit } from "../../lib/date";
 
 type Tracker = {
   id: string;
@@ -104,6 +104,33 @@ export default function Dashboard() {
   const plus = profile.plan === "plus" && ["active", "trialing"].includes(profile.subscription_status ?? "");
   const ownActiveCount = trackers.filter((tracker) => tracker.user_id === userId).length;
 
+  const grouped = useMemo(() => {
+    const overdue: Tracker[] = [];
+    const dueSoon: Tracker[] = [];
+    const later: Tracker[] = [];
+    const unscheduled: Tracker[] = [];
+
+    for (const tracker of trackers) {
+      const days = daysUntilDue(tracker.last_done_at, tracker.frequency_unit, tracker.frequency_value);
+      if (days === null) unscheduled.push(tracker);
+      else if (days < 0) overdue.push(tracker);
+      else if (days <= 7) dueSoon.push(tracker);
+      else later.push(tracker);
+    }
+
+    const sortByDue = (a: Tracker, b: Tracker) => {
+      const aDays = daysUntilDue(a.last_done_at, a.frequency_unit, a.frequency_value) ?? 999999;
+      const bDays = daysUntilDue(b.last_done_at, b.frequency_unit, b.frequency_value) ?? 999999;
+      return aDays - bDays;
+    };
+
+    overdue.sort(sortByDue);
+    dueSoon.sort(sortByDue);
+    later.sort(sortByDue);
+
+    return { overdue, dueSoon, later, unscheduled };
+  }, [trackers]);
+
   async function signOut() {
     const supabase = getSupabaseBrowserClient();
     await supabase.auth.signOut();
@@ -163,22 +190,38 @@ export default function Dashboard() {
           <button className="button primary" onClick={addTracker}>+ Add your first thing</button>
         </section>
       ) : (
-        <section className="panel">
-          <div className="panelTitle"><h2>Your things</h2><span>{trackers.length}</span></div>
-          {trackers.map((item) => (
-            <a className="tracker trackerLink" key={item.id} href={`/app/item/${item.id}`}>
-              <div className="trackerIcon">{item.emoji || "↺"}</div>
-              <div className="trackerText">
-                <div className="trackerTitleRow">
-                  <strong>{item.title}</strong>
-                  {item.household_id && <span className="sharedBadge">Family</span>}
+        <div className="trackerGroups">
+          {[
+            ["Overdue", grouped.overdue, "overdue"],
+            ["Due soon", grouped.dueSoon, "soon"],
+            ["Later", grouped.later, "later"],
+            ["No schedule", grouped.unscheduled, "unscheduled"],
+          ].map(([label, items, tone]) => {
+            const groupItems = items as Tracker[];
+            if (groupItems.length === 0) return null;
+            return (
+              <section className={`panel trackerGroup ${tone}`} key={label as string}>
+                <div className="panelTitle">
+                  <h2>{label as string}</h2>
+                  <span>{groupItems.length}</span>
                 </div>
-                <span>{relativeTime(item.last_done_at)} · {nextDueText(item.last_done_at, item.frequency_unit, item.frequency_value)}</span>
-              </div>
-              <button className="miniDone" onClick={(event) => markDone(event, item.id)}>✓ Did it again</button>
-            </a>
-          ))}
-        </section>
+                {groupItems.map((item) => (
+                  <a className="tracker trackerLink" key={item.id} href={`/app/item/${item.id}`}>
+                    <div className="trackerIcon">{item.emoji || "↺"}</div>
+                    <div className="trackerText">
+                      <div className="trackerTitleRow">
+                        <strong>{item.title}</strong>
+                        {item.household_id && <span className="sharedBadge">Family</span>}
+                      </div>
+                      <span>{relativeTime(item.last_done_at)} · {nextDueText(item.last_done_at, item.frequency_unit, item.frequency_value)}</span>
+                    </div>
+                    <button className="miniDone" onClick={(event) => markDone(event, item.id)}>✓ Did it again</button>
+                  </a>
+                ))}
+              </section>
+            );
+          })}
+        </div>
       )}
     </main>
   );
