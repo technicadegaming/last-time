@@ -8,6 +8,12 @@ type Mode = "signin" | "signup";
 
 export default function LoginPage() {
   const router = useRouter();
+
+  function nextPath() {
+    if (typeof window === "undefined") return "/app";
+    const next = new URLSearchParams(window.location.search).get("next");
+    return next && next.startsWith("/") ? next : "/app";
+  }
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +26,7 @@ export default function LoginPage() {
       const supabase = getSupabaseBrowserClient();
       supabase.auth.getSession().then(({ data }) => {
         cleanAuthFragment();
-        if (data.session) router.replace("/app");
+        if (data.session) router.replace(nextPath());
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Supabase is not configured.");
@@ -34,7 +40,7 @@ export default function LoginPage() {
 
     try {
       const supabase = getSupabaseBrowserClient();
-      const redirectTo = `${window.location.origin}/app`;
+      const redirectTo = `${window.location.origin}${nextPath()}`;
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo },
@@ -81,7 +87,7 @@ export default function LoginPage() {
         if (signUpError) throw signUpError;
 
         if (data.session) {
-          router.replace("/app");
+          router.replace(nextPath());
         } else {
           setMessage("Account created. Check your email to confirm it, then sign in.");
           setMode("signin");
@@ -89,7 +95,7 @@ export default function LoginPage() {
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) throw signInError;
-        router.replace("/app");
+        router.replace(nextPath());
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
