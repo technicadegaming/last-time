@@ -60,3 +60,15 @@ export function recurrenceText(unit: FrequencyUnit, value: number) {
   }
   return `Every ${value} ${unit}${value === 1 ? "" : "s"}`;
 }
+
+
+export function daysUntilDue(lastDone: string | null, unit: FrequencyUnit, value: number) {
+  if (!lastDone || unit === "none" || value <= 0) return null;
+  const next = addFrequency(lastDone, unit, value);
+  if (!next) return null;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const due = new Date(next.getFullYear(), next.getMonth(), next.getDate()).getTime();
+  return Math.round((due - today) / 86_400_000);
+}
