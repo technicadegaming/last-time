@@ -6,7 +6,7 @@ import { getSupabaseBrowserClient } from "../../../../lib/supabase";
 import { formatDate, nextDueText, recurrenceText, relativeTime, type FrequencyUnit } from "../../../../lib/date";
 
 type Tracker = { id:string; title:string; category:string; emoji:string; frequency_unit:FrequencyUnit; frequency_value:number; last_done_at:string|null; user_id:string; household_id:string|null; };
-type Occurrence = { id:string; completed_at:string; note:string|null; };
+type Occurrence = { id:string; completed_at:string; note:string|null; completed_by?:string|null; };
 
 const categories = [["home","🏠","Home"],["vehicle","🚗","Vehicle"],["pet","🐕","Pet"],["personal","✂️","Personal"],["yard","🌱","Yard"],["tech","💻","Tech"],["other","↺","Other"]] as const;
 
@@ -29,11 +29,19 @@ export default function TrackerDetailPage() {
       const supabase = getSupabaseBrowserClient();
       const { data: session } = await supabase.auth.getSession(); if (!session.session) { router.replace("/login"); return; }
       setUserId(session.session.user.id);
-      const [{ data: item, error: itemError }, { data: events, error: historyError }] = await Promise.all([
+      const [{ data: item, error: itemError }, historyResult] = await Promise.all([
         supabase.from("trackers").select("id,title,category,emoji,frequency_unit,frequency_value,last_done_at,user_id,household_id").eq("id", id).single(),
-        supabase.from("occurrences").select("id,completed_at,note").eq("tracker_id", id).order("completed_at", { ascending:false }).limit(50),
+        supabase.rpc("get_tracker_history", { p_tracker_id: id }),
       ]);
-      if (itemError) throw itemError; if (historyError) throw historyError;
+      if (itemError) throw itemError;
+
+      let events = historyResult.data as Occurrence[] | null;
+      if (historyResult.error) {
+        const fallback = await supabase.from("occurrences").select("id,completed_at,note").eq("tracker_id", id).order("completed_at", { ascending:false }).limit(50);
+        if (fallback.error) throw fallback.error;
+        events = fallback.data as Occurrence[];
+      }
+
       const t = item as Tracker; setTracker(t); setTitle(t.title); setCategory(t.category); setFrequencyUnit(t.frequency_unit); setFrequencyValue(t.frequency_value); setHistory((events ?? []) as Occurrence[]);
     } catch (err) { setError(err instanceof Error ? err.message : "Could not load this tracker."); }
     finally { setLoading(false); }
@@ -84,7 +92,7 @@ export default function TrackerDetailPage() {
 
     <section className="detailPanel">
       <div className="detailPanelHead"><h2>History</h2><button className="textButton inline" onClick={() => setEditing(!editing)}>{editing ? "Cancel" : "Edit"}</button></div>
-      {history.length === 0 ? <p className="historyEmpty">No completed dates yet. Tap “Did it again” the next time you do it.</p> : <div className="historyList">{history.map((event) => <div className="historyRow" key={event.id}><span className="historyDot">✓</span><div><strong>{formatDate(event.completed_at)}</strong><span>{relativeTime(event.completed_at)}</span></div></div>)}</div>}
+      {history.length === 0 ? <p className="historyEmpty">No completed dates yet. Tap “Did it again” the next time you do it.</p> : <div className="historyList">{history.map((event) => <div className="historyRow" key={event.id}><span className="historyDot">✓</span><div><strong>{formatDate(event.completed_at)}</strong><span>{relativeTime(event.completed_at)}{event.completed_by ? ` · ${event.completed_by}` : ""}</span></div></div>)}</div>}
     </section>
 
     {editing && <section className="detailPanel editPanel"><h2>Edit tracker</h2><form className="trackerForm compactForm" onSubmit={saveEdit}>
