@@ -30,12 +30,15 @@ export default function Dashboard() {
 
   const load = useCallback(async () => {
     try {
-      cleanAuthFragment();
       if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("checkout") === "success") {
         setCheckoutSuccess(true);
       }
       const supabase = getSupabaseBrowserClient();
+
+      // Let Supabase process OAuth tokens from the URL before we remove them.
       const { data: sessionData } = await supabase.auth.getSession();
+      cleanAuthFragment();
+
       if (!sessionData.session) {
         router.replace("/login");
         return;
