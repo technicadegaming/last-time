@@ -14,6 +14,8 @@ type Tracker = {
   frequency_value: number;
   last_done_at: string | null;
   created_at: string;
+  user_id: string;
+  household_id: string | null;
 };
 
 type Profile = { plan: "free" | "plus"; subscription_status: string | null };
@@ -23,6 +25,7 @@ export default function Dashboard() {
   const [trackers, setTrackers] = useState<Tracker[]>([]);
   const [profile, setProfile] = useState<Profile>({ plan: "free", subscription_status: null });
   const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
@@ -44,11 +47,12 @@ export default function Dashboard() {
         return;
       }
       setEmail(sessionData.session.user.email ?? "");
+      setUserId(sessionData.session.user.id);
 
       const [{ data, error: queryError }, { data: p, error: profileError }] = await Promise.all([
         supabase
           .from("trackers")
-          .select("id,title,category,emoji,frequency_unit,frequency_value,last_done_at,created_at")
+          .select("id,title,category,emoji,frequency_unit,frequency_value,last_done_at,created_at,user_id,household_id")
           .is("archived_at", null)
           .order("last_done_at", { ascending: true, nullsFirst: true }),
         supabase
@@ -98,6 +102,7 @@ export default function Dashboard() {
 
   const initial = useMemo(() => (email[0] || "?").toUpperCase(), [email]);
   const plus = profile.plan === "plus" && ["active", "trialing"].includes(profile.subscription_status ?? "");
+  const ownActiveCount = trackers.filter((tracker) => tracker.user_id === userId).length;
 
   async function signOut() {
     const supabase = getSupabaseBrowserClient();
@@ -119,7 +124,7 @@ export default function Dashboard() {
   }
 
   function addTracker() {
-    if (!plus && trackers.length >= 5) router.push("/app/upgrade?limit=1");
+    if (!plus && ownActiveCount >= 5) router.push("/app/upgrade?limit=1");
     else router.push("/app/new");
   }
 
@@ -144,7 +149,7 @@ export default function Dashboard() {
       {error && <div className="formError dashboardMessage">{error}</div>}
 
       {!loading && <section className={`planStrip ${plus ? "plus" : "free"}`}>
-        <div><strong>{plus ? "Last Time Plus" : "Free plan"}</strong><span>{plus ? "Unlimited active trackers" : `${trackers.length} of 5 active trackers used`}</span></div>
+        <div><strong>{plus ? "Last Time Plus" : "Free plan"}</strong><span>{plus ? "Unlimited active trackers" : `${ownActiveCount} of 5 active trackers used`}</span></div>
         {plus ? <span className="planBadge">PLUS</span> : <a href="/app/upgrade">Upgrade</a>}
       </section>}
 
@@ -164,7 +169,10 @@ export default function Dashboard() {
             <a className="tracker trackerLink" key={item.id} href={`/app/item/${item.id}`}>
               <div className="trackerIcon">{item.emoji || "↺"}</div>
               <div className="trackerText">
-                <strong>{item.title}</strong>
+                <div className="trackerTitleRow">
+                  <strong>{item.title}</strong>
+                  {item.household_id && <span className="sharedBadge">Family</span>}
+                </div>
                 <span>{relativeTime(item.last_done_at)} · {nextDueText(item.last_done_at, item.frequency_unit, item.frequency_value)}</span>
               </div>
               <button className="miniDone" onClick={(event) => markDone(event, item.id)}>✓ Did it again</button>
