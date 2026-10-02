@@ -165,6 +165,10 @@ drop policy if exists "Users can read their own trackers" on public.trackers;
 drop policy if exists "Users can create their own trackers" on public.trackers;
 drop policy if exists "Users can update their own trackers" on public.trackers;
 drop policy if exists "Users can delete their own trackers" on public.trackers;
+drop policy if exists "Users can read accessible trackers" on public.trackers;
+drop policy if exists "Users can create accessible trackers" on public.trackers;
+drop policy if exists "Users can update accessible trackers" on public.trackers;
+drop policy if exists "Tracker creators can delete trackers" on public.trackers;
 
 create policy "Users can read accessible trackers"
 on public.trackers for select
@@ -207,6 +211,8 @@ drop policy if exists "Users can read their own occurrences" on public.occurrenc
 drop policy if exists "Users can create their own occurrences" on public.occurrences;
 drop policy if exists "Users can update their own occurrences" on public.occurrences;
 drop policy if exists "Users can delete their own occurrences" on public.occurrences;
+drop policy if exists "Users can read accessible occurrences" on public.occurrences;
+drop policy if exists "Users can create accessible occurrences" on public.occurrences;
 
 create policy "Users can read accessible occurrences"
 on public.occurrences for select
