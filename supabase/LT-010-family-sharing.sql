@@ -108,9 +108,9 @@ begin
     raise exception 'PLUS_REQUIRED';
   end if;
 
-  insert into public.households (name, owner_id)
+  insert into public.households as h (name, owner_id)
   values (trim(p_name), auth.uid())
-  returning id, households.invite_code into new_id, new_code;
+  returning h.id, h.invite_code into new_id, new_code;
 
   insert into public.household_members (household_id, user_id, role)
   values (new_id, auth.uid(), 'owner');
