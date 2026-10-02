@@ -27,6 +27,25 @@ export default function LoginPage() {
     }
   }, [router]);
 
+  async function signInWithGoogle() {
+    setBusy(true);
+    setError("");
+    setMessage("");
+
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const redirectTo = `${window.location.origin}/app`;
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo },
+      });
+      if (oauthError) throw oauthError;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-in failed.");
+      setBusy(false);
+    }
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -64,6 +83,13 @@ export default function LoginPage() {
         <p className="eyebrow">{mode === "signin" ? "Welcome back" : "Start remembering"}</p>
         <h1>{mode === "signin" ? "Sign in" : "Create your free account"}</h1>
         <p className="authLead">One account. Your trackers. Nothing complicated.</p>
+
+        <button className="googleButton" type="button" disabled={busy} onClick={signInWithGoogle}>
+          <span className="googleMark" aria-hidden="true">G</span>
+          Continue with Google
+        </button>
+
+        <div className="authDivider"><span>or continue with email</span></div>
 
         <form className="authForm" onSubmit={submit}>
           <label>
