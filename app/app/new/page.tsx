@@ -1,6 +1,27 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+
+type SpeechRecognitionEventLike = {
+  results: ArrayLike<{ 0: { transcript: string } }>;
+};
+
+type SpeechRecognitionErrorEventLike = {
+  error: string;
+};
+
+type SpeechRecognitionLike = {
+  lang: string;
+  interimResults: boolean;
+  continuous: boolean;
+  start: () => void;
+  stop: () => void;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEventLike) => void) | null;
+  onend: (() => void) | null;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "../../../lib/supabase";
 
@@ -22,9 +43,19 @@ export default function NewTrackerPage() {
   const [frequencyUnit, setFrequencyUnit] = useState("none");
   const [frequencyValue, setFrequencyValue] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const speechWindow = window as typeof window & {
+        SpeechRecognition?: SpeechRecognitionConstructor;
+        webkitSpeechRecognition?: SpeechRecognitionConstructor;
+      };
+      setVoiceSupported(Boolean(speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition));
+    }
+
     try {
       const supabase = getSupabaseBrowserClient();
       supabase.auth.getSession().then(({ data }) => { if (!data.session) router.replace("/login"); });
@@ -64,13 +95,70 @@ export default function NewTrackerPage() {
 
   function choosePreset(unit: string, value: number) { setFrequencyUnit(unit); setFrequencyValue(value); }
 
+  function startVoiceInput() {
+    if (typeof window === "undefined") return;
+
+    const speechWindow = window as typeof window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    const Recognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
+
+    if (!Recognition) {
+      setError("Voice input is not supported in this browser. Try Chrome or Edge.");
+      return;
+    }
+
+    setError("");
+    const recognition = new Recognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0]?.[0]?.transcript?.trim();
+      if (transcript) setTitle(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      if (event.error !== "aborted") {
+        setError(event.error === "not-allowed"
+          ? "Microphone access was blocked. Allow microphone access and try again."
+          : "Could not hear that clearly. Try again.");
+      }
+    };
+
+    recognition.onend = () => setListening(false);
+
+    setListening(true);
+    recognition.start();
+  }
+
   return (
     <main className="appShell shell">
       <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ Last Time</a></header>
       <section className="formPage">
         <p className="eyebrow">Add something</p><h1>What do you want to remember?</h1>
         <form className="trackerForm" onSubmit={submit}>
-          <label>Thing to remember<input autoFocus required maxLength={120} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Change furnace filter" /></label>
+          <label>
+            Thing to remember
+            <div className="voiceInputWrap">
+              <input autoFocus required maxLength={120} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Change furnace filter" />
+              {voiceSupported && (
+                <button
+                  type="button"
+                  className={`voiceButton ${listening ? "listening" : ""}`}
+                  onClick={startVoiceInput}
+                  disabled={listening}
+                  aria-label="Use voice input"
+                  title="Speak what you want to remember"
+                >
+                  {listening ? "Listening…" : "🎙 Speak"}
+                </button>
+              )}
+            </div>
+            {voiceSupported && <span className="voiceHint">{listening ? "Say what you want Last Time to remember." : "Or tap Speak and say it out loud."}</span>}
+          </label>
           <fieldset><legend>Category</legend><div className="categoryGrid">
             {categories.map(([key, emoji, label]) => <label className={`categoryChoice ${category === key ? "selected" : ""}`} key={key}><input type="radio" name="category" value={key} checked={category === key} onChange={() => setCategory(key)} /><span>{emoji}</span><strong>{label}</strong></label>)}
           </div></fieldset>
