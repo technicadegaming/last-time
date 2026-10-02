@@ -1,0 +1,2 @@
+/* LT-008: Google sign-in */
+.googleButton{background:#fff;color:var(--ink);border:1px solid var(--line);gap:11px;margin-bottom:18px}.googleButton:hover{background:#fafbf9;border-color:#cfd6d0}.authDivider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:2px 0 20px}.authDivider:before,.authDivider:after{content:"";height:1px;background:var(--line);flex:1}.authDivider span{white-space:nowrap}
