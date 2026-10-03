@@ -1,4 +1,4 @@
-# Last Time — Launch QA Audit
+# AgainDue — Launch QA Audit
 
 Updated: 2026-10-02
 
@@ -16,7 +16,7 @@ Legend:
 | Custom domain | PASS | lasttime.technicade.tech configured and valid in Vercel |
 | Google sign-in on custom domain | PASS | User confirmed live Google login works |
 | Stripe live charge | PASS | User confirmed real card was charged |
-| Plus activation | PASS | User confirmed app shows Last Time Plus |
+| Plus activation | PASS | User confirmed app shows AgainDue Plus |
 | Stripe billing portal | PASS | User confirmed Manage Billing opens Stripe portal |
 | Reminder delivery | PASS | User confirmed real Resend reminder email delivered |
 | Resend domain | PASS | technicade.tech verified |
@@ -40,7 +40,7 @@ Legend:
 ### Billing
 - [x] Plus account can create tracker #6 and beyond. PASS — live user test confirmed more than 6 active trackers.
 - [ ] Monthly/annual checkout buttons point to intended live prices.
-- [ ] Cancel through Stripe portal and confirm Last Time subscription state updates correctly.
+- [ ] Cancel through Stripe portal and confirm AgainDue subscription state updates correctly.
 - [ ] Re-subscription after cancellation behaves correctly.
 
 ### Account and authentication
@@ -120,3 +120,15 @@ Start paid/organic promotion when:
 - cancellation sync passes,
 - custom-domain reminder link passes,
 - mobile smoke test passes.
+
+
+## LT-017 brand clearance / transition
+- [x] Customer-facing code rebranded from Last Time to AgainDue.
+- [x] Positioning shifted toward shared household maintenance memory.
+- [ ] Add and verify againdue.technicade.tech.
+- [ ] Update Vercel NEXT_PUBLIC_APP_URL.
+- [ ] Update Supabase auth Site URL / redirect allowlist.
+- [ ] Update Google OAuth authorized origin / branding.
+- [ ] Update Stripe public-facing brand/product text.
+- [ ] Update Resend sender display name.
+- [ ] Redirect legacy lasttime.technicade.tech to the new hostname.
