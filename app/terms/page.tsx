@@ -1,28 +1,28 @@
 export const metadata = {
-  title: "Terms of Service — AgainDue",
-  description: "Terms of Service for AgainDue.",
+  title: "Terms of Service — DoneDate",
+  description: "Terms of Service for DoneDate.",
 };
 
 export default function TermsPage() {
   return (
     <main className="legalPage shell">
-      <a className="brand legalBrand" href="/">↺ <span>AgainDue</span></a>
+      <a className="brand legalBrand" href="/">↺ <span>DoneDate</span></a>
       <article className="legalCard">
         <p className="eyebrow">Legal</p>
         <h1>Terms of Service</h1>
         <p className="legalUpdated">Effective October 2, 2026</p>
 
         <p>
-          These Terms govern your use of AgainDue, a reminder and life-maintenance tracking
-          service operated under the Technicade brand. By creating an account or using AgainDue,
+          These Terms govern your use of DoneDate, a reminder and life-maintenance tracking
+          service operated under the Technicade brand. By creating an account or using DoneDate,
           you agree to these Terms.
         </p>
 
         <h2>The service</h2>
         <p>
-          AgainDue lets you record when you completed recurring tasks, calculate future due dates,
+          DoneDate lets you record when you completed recurring tasks, calculate future due dates,
           receive reminders, keep completion history, and optionally share selected trackers with a
-          family group. AgainDue is an organizational tool, not a professional maintenance,
+          family group. DoneDate is an organizational tool, not a professional maintenance,
           medical, safety, financial, or legal service.
         </p>
 
@@ -39,7 +39,7 @@ export default function TermsPage() {
           Reminder dates are calculated from information you provide. Email delivery and scheduled
           jobs can occasionally be delayed or fail. You remain responsible for important
           maintenance, medication, safety inspections, deadlines, and other real-world obligations.
-          Do not rely on AgainDue as your sole safety-critical reminder.
+          Do not rely on DoneDate as your sole safety-critical reminder.
         </p>
 
         <h2>Family sharing</h2>
@@ -51,7 +51,7 @@ export default function TermsPage() {
 
         <h2>Free and Plus plans</h2>
         <p>
-          The Free plan currently supports up to five active trackers. AgainDue Plus currently
+          The Free plan currently supports up to five active trackers. DoneDate Plus currently
           provides unlimited active trackers and eligible paid features. Current prices are shown
           before checkout. Taxes may apply where required.
         </p>
@@ -66,7 +66,7 @@ export default function TermsPage() {
 
         <h2>Your content</h2>
         <p>
-          You retain ownership of information you enter into AgainDue. You grant AgainDue the
+          You retain ownership of information you enter into DoneDate. You grant DoneDate the
           limited permission necessary to host, process, transmit, back up, and display that
           information solely to operate and improve the service.
         </p>
@@ -79,7 +79,7 @@ export default function TermsPage() {
 
         <h2>Disclaimer and limitation</h2>
         <p>
-          To the maximum extent permitted by law, AgainDue is provided &quot;as is&quot; without
+          To the maximum extent permitted by law, DoneDate is provided &quot;as is&quot; without
           warranties of uninterrupted availability or fitness for a particular purpose. To the
           maximum extent permitted by law, the service operator is not liable for indirect,
           incidental, special, consequential, or punitive damages arising from use of, or inability
@@ -88,7 +88,7 @@ export default function TermsPage() {
 
         <h2>Termination and deletion</h2>
         <p>
-          You may stop using AgainDue at any time and may permanently delete your account from
+          You may stop using DoneDate at any time and may permanently delete your account from
           Settings. We may restrict or terminate access for abuse, fraud, security threats, or
           material violations of these Terms.
         </p>
