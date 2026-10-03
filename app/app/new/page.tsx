@@ -177,7 +177,7 @@ export default function NewTrackerPage() {
 
   return (
     <main className="appShell shell">
-      <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ Last Time</a></header>
+      <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ AgainDue</a></header>
       <section className="formPage">
         <p className="eyebrow">Add something</p><h1>What do you want to remember?</h1>
         <form className="trackerForm" onSubmit={submit}>
@@ -209,7 +209,7 @@ export default function NewTrackerPage() {
                 </button>
               )}
             </div>
-            {voiceSupported && <span className="voiceHint">{listening ? "Say what you want Last Time to remember." : "Or tap Speak and say it out loud."}</span>}
+            {voiceSupported && <span className="voiceHint">{listening ? "Say what you want AgainDue to remember." : "Or tap Speak and say it out loud."}</span>}
           </label>
           {householdId && (
             <fieldset>
