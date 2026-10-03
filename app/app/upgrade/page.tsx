@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { getSupabaseBrowserClient } from "../../../lib/supabase";
 
 type BillingInterval = "yearly" | "monthly";
@@ -16,8 +17,16 @@ export default function UpgradePage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const search = new URLSearchParams(window.location.search);
-      setLimitReached(search.get("limit") === "1");
-      setCancelled(search.get("checkout") === "cancelled");
+      const limit = search.get("limit") === "1";
+      const checkoutCancelled = search.get("checkout") === "cancelled";
+      setLimitReached(limit);
+      setCancelled(checkoutCancelled);
+      const viewKey = `last-time-upgrade-view:${window.location.pathname}${window.location.search}`;
+      if (!sessionStorage.getItem(viewKey)) {
+        track("upgrade_viewed", { reason: limit ? "free_limit" : "manual" });
+        sessionStorage.setItem(viewKey, "1");
+      }
+      if (checkoutCancelled) track("checkout_cancelled");
     }
     getSupabaseBrowserClient().auth.getSession().then(({ data }) => {
       if (!data.session) router.replace("/login");
@@ -38,6 +47,7 @@ export default function UpgradePage() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not start checkout.");
+      track("checkout_started", { interval });
       window.location.href = result.url;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not start checkout.");
