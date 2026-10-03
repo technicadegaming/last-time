@@ -1,4 +1,4 @@
-# AgainDue — LT-006
+# DoneDate — LT-006
 
 Dead-simple life maintenance tracking with a real free plan and Stripe subscriptions.
 
@@ -11,7 +11,7 @@ Dead-simple life maintenance tracking with a real free plan and Stripe subscript
 - Edit, archive, delete
 - Free plan: **5 active trackers**
 - Database-enforced free limit (not just a UI check)
-- AgainDue Plus: **$1.99/month** or **$14.99/year**
+- DoneDate Plus: **$1.99/month** or **$14.99/year**
 - Stripe Checkout
 - Stripe webhook -> automatically activates/deactivates Plus
 - Stripe Customer Portal -> customers can manage/cancel billing
@@ -49,7 +49,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 In Stripe **test mode**:
 
-1. Create product: `AgainDue Plus`.
+1. Create product: `DoneDate Plus`.
 2. Add recurring price: `$1.99 USD`, monthly. Copy its `price_...` ID.
 3. Add recurring price: `$14.99 USD`, yearly. Copy its `price_...` ID.
 4. Put those IDs in `.env.local`.
@@ -93,14 +93,14 @@ Open `http://localhost:3000`.
 4. Attempt tracker #6 -> app must send you to the Plus screen.
 5. Choose monthly or yearly -> Stripe Checkout should open.
 6. In Stripe test mode use card `4242 4242 4242 4242`, any future expiry, any CVC/postal code.
-7. Complete Checkout and return to AgainDue.
-8. Refresh after a few seconds -> dashboard should show `AgainDue Plus` and `Unlimited active trackers`.
+7. Complete Checkout and return to DoneDate.
+8. Refresh after a few seconds -> dashboard should show `DoneDate Plus` and `Unlimited active trackers`.
 9. Add tracker #6 successfully.
 10. Settings -> Manage billing should open Stripe's Customer Portal.
 
 ## Security notes
 
-- Stripe handles card entry. AgainDue never receives raw card data.
+- Stripe handles card entry. DoneDate never receives raw card data.
 - The Supabase service-role key and Stripe secret key are server-only.
 - Browser users can read only their own profile/tracker data through RLS.
 - Billing status cannot be changed by browser clients.
@@ -158,11 +158,11 @@ Copy the webhook signing secret (`whsec_...`) into `STRIPE_WEBHOOK_SECRET` in Ve
 
 ### End-to-end production test
 
-1. Sign in to AgainDue.
+1. Sign in to DoneDate.
 2. Open Upgrade and buy the sandbox yearly plan.
 3. Stripe redirects to `/app?checkout=success`.
-4. The banner should change from activating to `AgainDue Plus is active.`
+4. The banner should change from activating to `DoneDate Plus is active.`
 5. Refresh and confirm Plus remains active.
 6. Sign out/in and confirm Plus remains active.
 7. Settings -> Manage billing should open the Stripe Customer Portal.
-8. Cancel the sandbox subscription in the portal, return to AgainDue, and verify the subscription status changes after Stripe sends the webhook. Depending on cancellation settings, Plus can remain active through the paid period and then return to Free at cancellation end.
+8. Cancel the sandbox subscription in the portal, return to DoneDate, and verify the subscription status changes after Stripe sends the webhook. Depending on cancellation settings, Plus can remain active through the paid period and then return to Free at cancellation end.
