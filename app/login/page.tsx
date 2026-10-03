@@ -109,7 +109,7 @@ export default function LoginPage() {
 
   return (
     <main className="authPage shell">
-      <a className="brand authBrand" href="/">↺ <span>AgainDue</span></a>
+      <a className="brand authBrand" href="/">↺ <span>DoneDate</span></a>
       <section className="authCard">
         <p className="eyebrow">{mode === "signin" ? "Welcome back" : "Start remembering"}</p>
         <h1>{mode === "signin" ? "Sign in" : "Create your free account"}</h1>
