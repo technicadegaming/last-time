@@ -1,6 +1,6 @@
 {
-  "name": "AgainDue",
-  "short_name": "AgainDue",
+  "name": "DoneDate",
+  "short_name": "DoneDate",
   "description": "Remember when you last did the things you do again eventually.",
   "start_url": "/app",
   "display": "standalone",
