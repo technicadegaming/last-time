@@ -1,4 +1,4 @@
-# AgainDue — Launch QA Audit
+# DoneDate — Launch QA Audit
 
 Updated: 2026-10-02
 
@@ -13,10 +13,10 @@ Legend:
 | Area | Status | Evidence / note |
 | --- | --- | --- |
 | Production build | PASS | User confirmed successful Next.js production build |
-| Custom domain | PASS | lasttime.technicade.tech configured and valid in Vercel |
+| Custom domain | PASS | donedate.technicade.tech configured and valid in Vercel |
 | Google sign-in on custom domain | PASS | User confirmed live Google login works |
 | Stripe live charge | PASS | User confirmed real card was charged |
-| Plus activation | PASS | User confirmed app shows AgainDue Plus |
+| Plus activation | PASS | User confirmed app shows DoneDate Plus |
 | Stripe billing portal | PASS | User confirmed Manage Billing opens Stripe portal |
 | Reminder delivery | PASS | User confirmed real Resend reminder email delivered |
 | Resend domain | PASS | technicade.tech verified |
@@ -40,7 +40,7 @@ Legend:
 ### Billing
 - [x] Plus account can create tracker #6 and beyond. PASS — live user test confirmed more than 6 active trackers.
 - [ ] Monthly/annual checkout buttons point to intended live prices.
-- [ ] Cancel through Stripe portal and confirm AgainDue subscription state updates correctly.
+- [ ] Cancel through Stripe portal and confirm DoneDate subscription state updates correctly.
 - [ ] Re-subscription after cancellation behaves correctly.
 
 ### Account and authentication
@@ -87,7 +87,7 @@ Legend:
 - [ ] Overdue tracker sends if no reminder was previously logged for that due date.
 - [ ] Re-running cron does not duplicate same reminder.
 - [ ] Email reminder OFF prevents delivery.
-- [ ] Reminder button opens lasttime.technicade.tech.
+- [ ] Reminder button opens donedate.technicade.tech.
 - [ ] Special characters in tracker title render safely in email.
 
 ### Data controls
@@ -123,12 +123,12 @@ Start paid/organic promotion when:
 
 
 ## LT-017 brand clearance / transition
-- [x] Customer-facing code rebranded from Last Time to AgainDue.
+- [x] Customer-facing code rebranded from DoneDate to DoneDate.
 - [x] Positioning shifted toward shared household maintenance memory.
-- [ ] Add and verify againdue.technicade.tech.
+- [ ] Add and verify donedate.technicade.tech.
 - [ ] Update Vercel NEXT_PUBLIC_APP_URL.
 - [ ] Update Supabase auth Site URL / redirect allowlist.
 - [ ] Update Google OAuth authorized origin / branding.
 - [ ] Update Stripe public-facing brand/product text.
 - [ ] Update Resend sender display name.
-- [ ] Redirect legacy lasttime.technicade.tech to the new hostname.
+- [ ] Redirect legacy donedate.technicade.tech to the new hostname.
