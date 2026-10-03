@@ -143,6 +143,10 @@ export default function LoginPage() {
         <button className="textButton" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(""); setMessage(""); }}>
           {mode === "signin" ? "New here? Create a free account" : "Already have an account? Sign in"}
         </button>
+
+        <p className="authLegal">
+          By creating or using an account, you agree to the <a href="/terms">Terms</a> and acknowledge the <a href="/privacy">Privacy Policy</a>.
+        </p>
       </section>
     </main>
   );
