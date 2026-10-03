@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <main>
       <nav className="nav shell">
-        <a className="brand" href="/">↺ <span>AgainDue</span></a>
+        <a className="brand" href="/">↺ <span>DoneDate</span></a>
         <div className="navActions">
           <a className="navText" href="#how">How it works</a>
           <a className="navText" href="#pricing">Pricing</a>
@@ -29,7 +29,7 @@ export default function Home() {
           <h1>Keep your household maintenance <em>out of your head.</em></h1>
           <p className="lead">
             Oil changes. Furnace filters. Haircuts. Dog meds. Deep cleans.
-            Add it once, tap when you do it, and AgainDue keeps the shared maintenance memory for your home, car, pets, and family.
+            Add it once, tap when you do it, and DoneDate keeps the shared maintenance memory for your home, car, pets, and family.
           </p>
           <div className="actions">
             <a className="button primary" href="/app">Start remembering — free</a>
@@ -98,11 +98,11 @@ export default function Home() {
       <section className="simple shell">
         <h2>That’s basically it.</h2>
         <p>No giant planner. No endless setup. No complicated maintenance spreadsheet.</p>
-        <a className="button primary" href="/app">Try AgainDue</a>
+        <a className="button primary" href="/app">Try DoneDate</a>
       </section>
 
       <footer className="shell footer">
-        <span>© 2026 AgainDue · A Technicade product.</span>
+        <span>© 2026 DoneDate · A Technicade product.</span>
         <span className="footerLinks"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:support@technicade.tech">Support</a></span>
       </footer>
     </main>
