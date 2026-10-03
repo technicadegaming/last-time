@@ -1,9 +1,9 @@
-# AgainDue — Production Launch Checklist
+# DoneDate — Production Launch Checklist
 
 This checklist is the remaining operator work after LT-012. The application code is configured to use:
 
-- Canonical app URL: https://lasttime.technicade.tech
-- Reminder sender: AgainDue <reminders@technicade.tech>
+- Canonical app URL: https://donedate.technicade.tech
+- Reminder sender: DoneDate <reminders@technicade.tech>
 - Support contact: support@technicade.tech
 
 ## 1. Database
@@ -17,7 +17,7 @@ Expected result: success with no SQL errors.
 From the local repository:
 
 ```powershell
-cd C:\Projects\last-time
+cd C:\Projects\donedate
 git pull
 npm run build
 ```
@@ -26,13 +26,13 @@ Do not deploy a build that reports TypeScript or Next.js errors.
 
 ## 3. Vercel production domain
 
-In the AgainDue Vercel project:
+In the DoneDate Vercel project:
 
-1. Add `lasttime.technicade.tech` under Settings -> Domains.
+1. Add `donedate.technicade.tech` under Settings -> Domains.
 2. Add the exact DNS record Vercel requests at the DNS provider for `technicade.tech`.
 3. Wait for Vercel to show the domain as valid.
 4. Set `NEXT_PUBLIC_APP_URL` to:
-   `https://lasttime.technicade.tech`
+   `https://donedate.technicade.tech`
 5. Confirm these production environment variables exist:
    - NEXT_PUBLIC_SUPABASE_URL
    - NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -52,17 +52,17 @@ In the AgainDue Vercel project:
 
 In Supabase -> Authentication -> URL Configuration:
 
-- Site URL: `https://lasttime.technicade.tech`
+- Site URL: `https://donedate.technicade.tech`
 - Redirect URLs:
-  - `https://lasttime.technicade.tech/**`
+  - `https://donedate.technicade.tech/**`
   - Keep the Vercel production URL temporarily during cutover if desired.
   - Keep `http://localhost:3000/**` for local development if desired.
 
 ## 5. Google OAuth
 
-In Google Cloud Console for the AgainDue OAuth client, add:
+In Google Cloud Console for the DoneDate OAuth client, add:
 
-- Authorized JavaScript origin: `https://lasttime.technicade.tech`
+- Authorized JavaScript origin: `https://donedate.technicade.tech`
 
 Keep the Supabase callback URI already configured:
 `https://wwoflgmnnjggzaxwslzf.supabase.co/auth/v1/callback`
@@ -72,7 +72,7 @@ Keep the Supabase callback URI already configured:
 The domain `technicade.tech` must remain verified.
 
 Set Vercel:
-`REMINDER_FROM_EMAIL=AgainDue <reminders@technicade.tech>`
+`REMINDER_FROM_EMAIL=DoneDate <reminders@technicade.tech>`
 
 Run one authenticated manual reminder request after the custom-domain deployment and confirm delivery.
 
@@ -90,7 +90,7 @@ Perform one real live-mode purchase from the public app.
 Verify:
 
 1. Checkout completes successfully.
-2. The app returns to AgainDue.
+2. The app returns to DoneDate.
 3. The account changes to Plus.
 4. Unlimited tracker behavior works.
 5. Manage Billing opens the Stripe Customer Portal.
@@ -149,7 +149,7 @@ The current `.gitignore` excludes local environment files.
 
 ## Launch gate
 
-AgainDue is ready to actively promote when all of these are true:
+DoneDate is ready to actively promote when all of these are true:
 
 - Production build succeeds
 - Custom domain resolves over HTTPS
@@ -164,13 +164,26 @@ AgainDue is ready to actively promote when all of these are true:
 
 ## Brand transition (LT-017)
 
-The customer-facing product name is now **AgainDue**. The existing production URL
-`https://lasttime.technicade.tech` is a temporary legacy URL during the transition.
+The customer-facing product name is now **DoneDate**. The existing production URL
+`https://donedate.technicade.tech` is a temporary legacy URL during the transition.
 
 Before paid promotion:
-- Add `againdue.technicade.tech` in Vercel and DNS.
-- Change `NEXT_PUBLIC_APP_URL` to `https://againdue.technicade.tech`.
+- Add `donedate.technicade.tech` in Vercel and DNS.
+- Change `NEXT_PUBLIC_APP_URL` to `https://donedate.technicade.tech`.
 - Add the new URL to Supabase Auth redirect URLs and Google OAuth authorized origins.
-- Update Stripe public business name/product branding to AgainDue / AgainDue by Technicade.
-- Update REMINDER_FROM_EMAIL display name from Last Time to AgainDue.
+- Update Stripe public business name/product branding to DoneDate / DoneDate by Technicade.
+- Update REMINDER_FROM_EMAIL display name from DoneDate to DoneDate.
 - Keep the old domain redirecting to the new domain during the transition.
+
+
+## DoneDate production cutover
+
+Before paid advertising, finish the external-service cutover:
+- Vercel: add `donedate.technicade.tech` and make it the production domain.
+- Vercel: set `NEXT_PUBLIC_APP_URL=https://donedate.technicade.tech` and redeploy.
+- Namecheap: create the DNS record Vercel requests for `donedate`.
+- Supabase Auth: set Site URL to `https://donedate.technicade.tech` and add `https://donedate.technicade.tech/**` to Redirect URLs.
+- Google OAuth: add `https://donedate.technicade.tech` as an authorized JavaScript origin and update app branding to DoneDate.
+- Stripe: update customer-facing product/public branding from the temporary names to DoneDate / DoneDate by Technicade.
+- Resend/Vercel: set `REMINDER_FROM_EMAIL=DoneDate <reminders@technicade.tech>`.
+- Keep the legacy `lasttime.technicade.tech` hostname working temporarily, then redirect it to `donedate.technicade.tech`.
