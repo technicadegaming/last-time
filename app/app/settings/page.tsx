@@ -148,7 +148,7 @@ export default function SettingsPage() {
       await load();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not create the family.";
-      setError(message.includes("PLUS_REQUIRED") ? "Creating a family requires Last Time Plus." : message);
+      setError(message.includes("PLUS_REQUIRED") ? "Creating a family requires AgainDue Plus." : message);
     } finally {
       setFamilyBusy(false);
     }
@@ -291,7 +291,7 @@ export default function SettingsPage() {
 
   async function deleteAccount() {
     const confirmation = window.prompt(
-      "This permanently deletes your Last Time account and stops future billing. Type DELETE to continue."
+      "This permanently deletes your AgainDue account and stops future billing. Type DELETE to continue."
     );
     if (confirmation !== "DELETE") return;
 
@@ -333,7 +333,7 @@ export default function SettingsPage() {
     <main className="appShell shell">
       <header className="appHeader">
         <a className="brand" href="/app">← <span>Back</span></a>
-        <a className="smallBrand" href="/">↺ Last Time</a>
+        <a className="smallBrand" href="/">↺ AgainDue</a>
       </header>
 
       <section className="formPage settingsPage">
@@ -351,7 +351,7 @@ export default function SettingsPage() {
         <section className="settingsCard">
           <span>Plan</span>
           <div>
-            <strong>{plus ? "Last Time Plus" : "Free"}</strong>
+            <strong>{plus ? "AgainDue Plus" : "Free"}</strong>
             <p>{plus ? "Unlimited active trackers" : "Up to 5 active trackers"}</p>
           </div>
         </section>
@@ -502,7 +502,7 @@ export default function SettingsPage() {
             <div className="accountTool dangerZone">
               <div>
                 <strong>Delete account permanently</strong>
-                <p>Stops future billing and permanently removes your Last Time account and app data.</p>
+                <p>Stops future billing and permanently removes your AgainDue account and app data.</p>
               </div>
               <button type="button" className="button dangerButton" onClick={deleteAccount} disabled={accountBusy}>
                 Delete account
