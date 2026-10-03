@@ -128,7 +128,7 @@ export async function GET(request: Request) {
           continue;
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://last-time-ashy.vercel.app";
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://lasttime.technicade.tech";
         const overdue = dueKey < todayKey;
         const subject = overdue
           ? `Last Time reminder: ${tracker.title} is overdue`
