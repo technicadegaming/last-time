@@ -98,8 +98,7 @@ export default function Dashboard() {
               track("plus_activated", { interval });
               sessionStorage.setItem(purchaseKey, "1");
             }
-            track("tracker_completed");
-      await load();
+            await load();
             break;
           }
           await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -155,6 +154,7 @@ export default function Dashboard() {
       const supabase = getSupabaseBrowserClient();
       const { error: rpcError } = await supabase.rpc("mark_tracker_done", { p_tracker_id: trackerId });
       if (rpcError) throw rpcError;
+      track("tracker_completed");
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not mark that as done.");
