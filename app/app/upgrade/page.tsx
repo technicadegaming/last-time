@@ -56,9 +56,9 @@ export default function UpgradePage() {
   }
 
   return <main className="appShell shell">
-    <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ Last Time</a></header>
+    <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ AgainDue</a></header>
     <section className="upgradeHero">
-      <p className="eyebrow">Last Time Plus</p>
+      <p className="eyebrow">AgainDue Plus</p>
       <h1>{limitReached ? "You’ve remembered 5 things." : "Keep remembering everything."}</h1>
       <p className="lead">Free is yours forever for up to 5 active trackers. Plus removes the limit and supports the app.</p>
       {cancelled && <div className="formSuccess">No charge was made. You can keep using the free plan.</div>}
@@ -82,6 +82,6 @@ export default function UpgradePage() {
         <button className="button ghost full" onClick={() => checkout("monthly")} disabled={busy !== null}>{busy === "monthly" ? "Opening Stripe…" : "Get Plus monthly"}</button>
       </article>
     </section>
-    <p className="upgradeFoot">Secure checkout is handled by Stripe. Your card details never pass through Last Time.</p>
+    <p className="upgradeFoot">Secure checkout is handled by Stripe. Your card details never pass through AgainDue.</p>
   </main>;
 }
