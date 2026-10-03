@@ -1,0 +1,162 @@
+# Last Time — Production Launch Checklist
+
+This checklist is the remaining operator work after LT-012. The application code is configured to use:
+
+- Canonical app URL: https://lasttime.technicade.tech
+- Reminder sender: Last Time <reminders@technicade.tech>
+- Support contact: support@technicade.tech
+
+## 1. Database
+
+Run `supabase/LT-012-production-hardening.sql` in Supabase SQL Editor after LT-010 and LT-011.
+
+Expected result: success with no SQL errors.
+
+## 2. Build
+
+From the local repository:
+
+```powershell
+cd C:\Projects\last-time
+git pull
+npm run build
+```
+
+Do not deploy a build that reports TypeScript or Next.js errors.
+
+## 3. Vercel production domain
+
+In the Last Time Vercel project:
+
+1. Add `lasttime.technicade.tech` under Settings -> Domains.
+2. Add the exact DNS record Vercel requests at the DNS provider for `technicade.tech`.
+3. Wait for Vercel to show the domain as valid.
+4. Set `NEXT_PUBLIC_APP_URL` to:
+   `https://lasttime.technicade.tech`
+5. Confirm these production environment variables exist:
+   - NEXT_PUBLIC_SUPABASE_URL
+   - NEXT_PUBLIC_SUPABASE_ANON_KEY
+   - SUPABASE_SERVICE_ROLE_KEY
+   - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+   - STRIPE_SECRET_KEY
+   - STRIPE_MONTHLY_PRICE_ID
+   - STRIPE_YEARLY_PRICE_ID
+   - STRIPE_WEBHOOK_SECRET
+   - RESEND_API_KEY
+   - REMINDER_FROM_EMAIL
+   - CRON_SECRET
+   - NEXT_PUBLIC_APP_URL
+6. Redeploy production.
+
+## 4. Supabase Auth URLs
+
+In Supabase -> Authentication -> URL Configuration:
+
+- Site URL: `https://lasttime.technicade.tech`
+- Redirect URLs:
+  - `https://lasttime.technicade.tech/**`
+  - Keep the Vercel production URL temporarily during cutover if desired.
+  - Keep `http://localhost:3000/**` for local development if desired.
+
+## 5. Google OAuth
+
+In Google Cloud Console for the Last Time OAuth client, add:
+
+- Authorized JavaScript origin: `https://lasttime.technicade.tech`
+
+Keep the Supabase callback URI already configured:
+`https://wwoflgmnnjggzaxwslzf.supabase.co/auth/v1/callback`
+
+## 6. Resend
+
+The domain `technicade.tech` must remain verified.
+
+Set Vercel:
+`REMINDER_FROM_EMAIL=Last Time <reminders@technicade.tech>`
+
+Run one authenticated manual reminder request after the custom-domain deployment and confirm delivery.
+
+## 7. Support email
+
+The public Privacy Policy, Terms, and landing page use:
+`support@technicade.tech`
+
+Configure that address as a mailbox or forwarding address so incoming support mail is received.
+
+## 8. Stripe live checkout verification
+
+Perform one real live-mode purchase from the public app.
+
+Verify:
+
+1. Checkout completes successfully.
+2. The app returns to Last Time.
+3. The account changes to Plus.
+4. Unlimited tracker behavior works.
+5. Manage Billing opens the Stripe Customer Portal.
+6. Canceling changes subscription state correctly after the webhook runs.
+
+If testing with your own payment, refund/cancel it from Stripe afterward if appropriate. Stripe processing fees or refund handling may vary.
+
+## 9. Account/privacy smoke test
+
+Test:
+
+- Email/password sign-up
+- Google sign-in
+- Forgot password
+- Password reset
+- Quick Add
+- Voice capture in Chrome/Edge
+- Create tracker
+- Due/overdue dashboard grouping
+- Mark "Did it again"
+- Completion history
+- Email reminders
+- Create family
+- Copy invite link
+- Join family from a second account
+- Shared tracker visibility
+- "Who did it" shared history
+- Remove family member
+- Leave family
+- Dissolve family
+- Export account data
+- Privacy page
+- Terms page
+
+Use a disposable account to verify Delete Account:
+- Type DELETE
+- Account is removed
+- Future billing is stopped
+- Sign-in no longer works
+
+## 10. Public repository hygiene
+
+The repository intentionally contains only placeholder values in `.env.example`.
+Do not commit:
+
+- `.env`
+- `.env.local`
+- Stripe secret keys
+- Stripe webhook secrets
+- Supabase service-role keys
+- Resend API keys
+- CRON_SECRET
+- Google OAuth client secrets
+
+The current `.gitignore` excludes local environment files.
+
+## Launch gate
+
+Last Time is ready to actively promote when all of these are true:
+
+- Production build succeeds
+- Custom domain resolves over HTTPS
+- Google and email auth work on the custom domain
+- One live Stripe purchase succeeds
+- One real reminder email succeeds
+- Export works
+- Delete-account works on a disposable account
+- Privacy and Terms pages are publicly reachable
+- support@technicade.tech receives mail
