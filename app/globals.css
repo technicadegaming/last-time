@@ -123,3 +123,6 @@
   .footer{justify-content:center;text-align:center}
   .legalCard{border-radius:18px;padding:24px 20px}
 }
+
+.authLegal{margin:18px 0 0;text-align:center;color:var(--muted);font-size:10px;line-height:1.5}
+.authLegal a{color:inherit}
