@@ -167,3 +167,51 @@ $$;
 
 revoke all on function public.delete_household() from public;
 grant execute on function public.delete_household() to authenticated;
+
+
+-- Return a minimal member list to people in the same household.
+create or replace function public.get_household_members()
+returns table(
+  user_id uuid,
+  role text,
+  email text,
+  joined_at timestamptz
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_household uuid;
+begin
+  if auth.uid() is null then
+    raise exception 'AUTH_REQUIRED';
+  end if;
+
+  select hm.household_id into target_household
+  from public.household_members hm
+  where hm.user_id = auth.uid()
+  limit 1;
+
+  if target_household is null then
+    return;
+  end if;
+
+  if not (
+    public.is_household_owner(target_household)
+    or public.is_household_member(target_household)
+  ) then
+    raise exception 'HOUSEHOLD_ACCESS_REQUIRED';
+  end if;
+
+  return query
+  select hm.user_id, hm.role, p.email, hm.joined_at
+  from public.household_members hm
+  left join public.profiles p on p.user_id = hm.user_id
+  where hm.household_id = target_household
+  order by case when hm.role = 'owner' then 0 else 1 end, hm.joined_at asc;
+end;
+$$;
+
+revoke all on function public.get_household_members() from public;
+grant execute on function public.get_household_members() to authenticated;
