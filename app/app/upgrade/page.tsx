@@ -21,7 +21,7 @@ export default function UpgradePage() {
       const checkoutCancelled = search.get("checkout") === "cancelled";
       setLimitReached(limit);
       setCancelled(checkoutCancelled);
-      const viewKey = `last-time-upgrade-view:${window.location.pathname}${window.location.search}`;
+      const viewKey = `donedate-upgrade-view:${window.location.pathname}${window.location.search}`;
       if (!sessionStorage.getItem(viewKey)) {
         track("upgrade_viewed", { reason: limit ? "free_limit" : "manual" });
         sessionStorage.setItem(viewKey, "1");
@@ -56,9 +56,9 @@ export default function UpgradePage() {
   }
 
   return <main className="appShell shell">
-    <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ AgainDue</a></header>
+    <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ DoneDate</a></header>
     <section className="upgradeHero">
-      <p className="eyebrow">AgainDue Plus</p>
+      <p className="eyebrow">DoneDate Plus</p>
       <h1>{limitReached ? "You’ve remembered 5 things." : "Keep remembering everything."}</h1>
       <p className="lead">Free is yours forever for up to 5 active trackers. Plus removes the limit and supports the app.</p>
       {cancelled && <div className="formSuccess">No charge was made. You can keep using the free plan.</div>}
@@ -82,6 +82,6 @@ export default function UpgradePage() {
         <button className="button ghost full" onClick={() => checkout("monthly")} disabled={busy !== null}>{busy === "monthly" ? "Opening Stripe…" : "Get Plus monthly"}</button>
       </article>
     </section>
-    <p className="upgradeFoot">Secure checkout is handled by Stripe. Your card details never pass through AgainDue.</p>
+    <p className="upgradeFoot">Secure checkout is handled by Stripe. Your card details never pass through DoneDate.</p>
   </main>;
 }
