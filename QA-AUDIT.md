@@ -46,8 +46,8 @@ Legend:
 ### Account and authentication
 - [ ] Email/password signup works on custom domain.
 - [ ] Email/password login works.
-- [ ] Forgot-password email arrives.
-- [ ] Password reset returns to custom domain and new password works.
+- [x] Forgot-password email arrives. PASS — live user test confirmed reset email arrived.
+- [x] Password reset returns to custom domain and new password works. PASS — live user test confirmed password reset completed successfully.
 - [ ] Logout clears session.
 - [ ] Disposable-account deletion works and the deleted account cannot sign back in.
 
