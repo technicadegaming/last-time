@@ -158,16 +158,16 @@ export async function GET(request: Request) {
           continue;
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://lasttime.technicade.tech";
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://donedate.technicade.tech";
         const overdue = dueKey < todayKey;
         const subject = overdue
-          ? `AgainDue reminder: ${tracker.title} is overdue`
-          : `AgainDue reminder: ${tracker.title} is due today`;
+          ? `DoneDate reminder: ${tracker.title} is overdue`
+          : `DoneDate reminder: ${tracker.title} is due today`;
 
         const safeTitle = escapeHtml(tracker.title);
         const html = `
           <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#17201b">
-            <h2 style="margin-bottom:8px">↺ AgainDue</h2>
+            <h2 style="margin-bottom:8px">↺ DoneDate</h2>
             <h1 style="font-size:26px;margin:0 0 16px">${safeTitle}</h1>
             <p style="font-size:16px;line-height:1.5">
               ${overdue ? "This is overdue." : "This is due today."}
@@ -175,11 +175,11 @@ export async function GET(request: Request) {
             </p>
             <p>
               <a href="${appUrl}/app/item/${tracker.id}" style="display:inline-block;background:#17201b;color:white;text-decoration:none;padding:12px 18px;border-radius:12px;font-weight:700">
-                Open in AgainDue
+                Open in DoneDate
               </a>
             </p>
             <p style="font-size:12px;color:#657068;margin-top:28px">
-              You can turn email reminders off in AgainDue Settings.
+              You can turn email reminders off in DoneDate Settings.
             </p>
           </div>
         `;
