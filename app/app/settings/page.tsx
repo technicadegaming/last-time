@@ -19,6 +19,13 @@ type Household = {
   owner_id: string;
 };
 
+type HouseholdMember = {
+  user_id: string;
+  role: "owner" | "member";
+  email: string | null;
+  joined_at: string;
+};
+
 export default function SettingsPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -26,11 +33,13 @@ export default function SettingsPage() {
   const [userId, setUserId] = useState("");
   const [household, setHousehold] = useState<Household | null>(null);
   const [householdRole, setHouseholdRole] = useState<"owner" | "member" | null>(null);
+  const [members, setMembers] = useState<HouseholdMember[]>([]);
   const [householdName, setHouseholdName] = useState("My family");
   const [inviteCode, setInviteCode] = useState("");
   const [familyMessage, setFamilyMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [familyBusy, setFamilyBusy] = useState(false);
+  const [accountBusy, setAccountBusy] = useState(false);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
@@ -69,31 +78,42 @@ export default function SettingsPage() {
     if (!membership) {
       setHousehold(null);
       setHouseholdRole(null);
+      setMembers([]);
       return;
     }
 
     setHouseholdRole(membership.role as "owner" | "member");
-    const { data: h, error: hError } = await supabase
-      .from("households")
-      .select("id,name,invite_code,owner_id")
-      .eq("id", membership.household_id)
-      .single();
+
+    const [{ data: h, error: hError }, memberResult] = await Promise.all([
+      supabase
+        .from("households")
+        .select("id,name,invite_code,owner_id")
+        .eq("id", membership.household_id)
+        .single(),
+      supabase.rpc("get_household_members"),
+    ]);
 
     if (hError) setError(hError.message);
     else setHousehold(h as Household);
+
+    if (!memberResult.error) setMembers((memberResult.data ?? []) as HouseholdMember[]);
   }, [router]);
 
   useEffect(() => {
     load();
   }, [load]);
 
+  async function getToken() {
+    const supabase = getSupabaseBrowserClient();
+    const { data } = await supabase.auth.getSession();
+    return data.session?.access_token ?? null;
+  }
+
   async function billing() {
     setBusy(true);
     setError("");
     try {
-      const supabase = getSupabaseBrowserClient();
-      const { data } = await supabase.auth.getSession();
-      const token = data.session?.access_token;
+      const token = await getToken();
       if (!token) {
         router.replace("/login");
         return;
@@ -124,7 +144,7 @@ export default function SettingsPage() {
         p_name: householdName.trim(),
       });
       if (familyError) throw familyError;
-      setFamilyMessage("Family created. Share the invite code with the people you want to add.");
+      setFamilyMessage("Family created. Share the invite link with the people you want to add.");
       await load();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not create the family.";
@@ -178,6 +198,132 @@ export default function SettingsPage() {
       setProfile((current) => current ? { ...current, email_reminders: enabled, timezone } : current);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not update reminder settings.");
+    }
+  }
+
+  async function removeFamilyMember(member: HouseholdMember) {
+    if (!confirm(`Remove ${member.email || "this member"} from your family?`)) return;
+    setFamilyBusy(true);
+    setError("");
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: removeError } = await supabase.rpc("remove_household_member", { p_user_id: member.user_id });
+      if (removeError) throw removeError;
+      setFamilyMessage("Family member removed.");
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not remove that family member.");
+    } finally {
+      setFamilyBusy(false);
+    }
+  }
+
+  async function leaveFamily() {
+    if (!confirm("Leave this family? Shared family trackers will disappear from your account.")) return;
+    setFamilyBusy(true);
+    setError("");
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: leaveError } = await supabase.rpc("leave_household");
+      if (leaveError) throw leaveError;
+      setFamilyMessage("You left the family.");
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not leave the family.");
+    } finally {
+      setFamilyBusy(false);
+    }
+  }
+
+  async function dissolveFamily() {
+    if (!confirm("Dissolve this family? Members will lose access to shared trackers. Trackers stay with their original creators.")) return;
+    setFamilyBusy(true);
+    setError("");
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: deleteError } = await supabase.rpc("delete_household");
+      if (deleteError) throw deleteError;
+      setFamilyMessage("Family dissolved. Existing trackers are now private to their creators.");
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not dissolve the family.");
+    } finally {
+      setFamilyBusy(false);
+    }
+  }
+
+  async function exportData() {
+    setAccountBusy(true);
+    setError("");
+    try {
+      const token = await getToken();
+      if (!token) {
+        router.replace("/login");
+        return;
+      }
+
+      const response = await fetch("/api/account/export", {
+        headers: { authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.error || "Could not export your data.");
+      }
+
+      const blob = await response.blob();
+      const disposition = response.headers.get("content-disposition") ?? "";
+      const match = disposition.match(/filename="([^"]+)"/);
+      const filename = match?.[1] || "last-time-export.json";
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not export your data.");
+    } finally {
+      setAccountBusy(false);
+    }
+  }
+
+  async function deleteAccount() {
+    const confirmation = window.prompt(
+      "This permanently deletes your Last Time account and stops future billing. Type DELETE to continue."
+    );
+    if (confirmation !== "DELETE") return;
+
+    setAccountBusy(true);
+    setError("");
+    try {
+      const token = await getToken();
+      if (!token) {
+        router.replace("/login");
+        return;
+      }
+
+      const response = await fetch("/api/account/delete", {
+        method: "DELETE",
+        headers: {
+          authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ confirmation }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not delete your account.");
+
+      try {
+        await getSupabaseBrowserClient().auth.signOut();
+      } catch {
+        // The auth user is already gone, so local cleanup may fail harmlessly.
+      }
+      window.location.href = "/?account=deleted";
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete your account.");
+      setAccountBusy(false);
     }
   }
 
@@ -252,7 +398,7 @@ export default function SettingsPage() {
               <div>
                 <span className="familyLabel">Your family</span>
                 <strong>{household.name}</strong>
-                <p>Shared trackers are visible to everyone in this family.</p>
+                <p>Shared trackers are visible to everyone in this family while the owner has Plus.</p>
               </div>
 
               <div className="inviteBox">
@@ -260,6 +406,35 @@ export default function SettingsPage() {
                 <strong>{household.invite_code.toUpperCase()}</strong>
                 <button type="button" className="button ghost" onClick={copyInvite}>Copy invite link</button>
               </div>
+
+              {members.length > 0 && (
+                <div className="memberList">
+                  <span className="familyLabel">Members</span>
+                  {members.map((member) => (
+                    <div className="memberRow" key={member.user_id}>
+                      <div>
+                        <strong>{member.email || "Family member"}</strong>
+                        <span>{member.role === "owner" ? "Owner" : "Member"}</span>
+                      </div>
+                      {householdRole === "owner" && member.user_id !== userId && (
+                        <button type="button" className="textButton dangerText" onClick={() => removeFamilyMember(member)} disabled={familyBusy}>
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {householdRole === "member" ? (
+                <button type="button" className="button ghost full" onClick={leaveFamily} disabled={familyBusy}>
+                  Leave family
+                </button>
+              ) : (
+                <button type="button" className="textButton dangerText" onClick={dissolveFamily} disabled={familyBusy}>
+                  Dissolve family
+                </button>
+              )}
             </div>
           ) : (
             <div className="familySetupGrid">
@@ -306,6 +481,41 @@ export default function SettingsPage() {
             </div>
           )}
         </section>
+
+        <section className="settingsSubsection">
+          <div className="familySectionHead">
+            <div>
+              <p className="eyebrow">Your data</p>
+              <h2>Export & account</h2>
+            </div>
+          </div>
+          <div className="accountTools">
+            <div className="accountTool">
+              <div>
+                <strong>Download your data</strong>
+                <p>Export your account, trackers, schedules, and completion history as JSON.</p>
+              </div>
+              <button type="button" className="button ghost" onClick={exportData} disabled={accountBusy}>
+                Export data
+              </button>
+            </div>
+            <div className="accountTool dangerZone">
+              <div>
+                <strong>Delete account permanently</strong>
+                <p>Stops future billing and permanently removes your Last Time account and app data.</p>
+              </div>
+              <button type="button" className="button dangerButton" onClick={deleteAccount} disabled={accountBusy}>
+                Delete account
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div className="settingsLegal">
+          <a href="/privacy">Privacy Policy</a>
+          <span>·</span>
+          <a href="/terms">Terms of Service</a>
+        </div>
       </section>
     </main>
   );
