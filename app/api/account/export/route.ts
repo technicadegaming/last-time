@@ -47,7 +47,7 @@ export async function GET(request: Request) {
     if (membership?.household_id) {
       const { data, error } = await admin
         .from("households")
-        .select("id,name,owner_id,created_at")
+        .select("id,name,created_at")
         .eq("id", membership.household_id)
         .maybeSingle();
       if (error) throw error;
