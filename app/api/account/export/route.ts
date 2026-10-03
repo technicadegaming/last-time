@@ -55,7 +55,7 @@ export async function GET(request: Request) {
     }
 
     const payload = {
-      product: "AgainDue",
+      product: "DoneDate",
       exported_at: new Date().toISOString(),
       account: {
         user_id: user.id,
@@ -76,7 +76,7 @@ export async function GET(request: Request) {
       status: 200,
       headers: {
         "content-type": "application/json; charset=utf-8",
-        "content-disposition": `attachment; filename="againdue-export-${date}.json"`,
+        "content-disposition": `attachment; filename="donedate-export-${date}.json"`,
         "cache-control": "no-store",
       },
     });
