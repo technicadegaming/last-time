@@ -23,6 +23,7 @@ type SpeechRecognitionLike = {
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 import { useRouter } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { getSupabaseBrowserClient } from "../../../lib/supabase";
 
 const categories = [
@@ -101,7 +102,11 @@ export default function NewTrackerPage() {
         household_id: shareWithFamily && householdId ? householdId : null,
       }).select("id").single();
       if (insertError) {
-        if (insertError.message.includes("FREE_LIMIT_REACHED")) { router.replace("/app/upgrade?limit=1"); return; }
+        if (insertError.message.includes("FREE_LIMIT_REACHED")) {
+          track("free_limit_reached", { source: "tracker_insert" });
+          router.replace("/app/upgrade?limit=1");
+          return;
+        }
         throw insertError;
       }
       if (timestamp) {
@@ -110,6 +115,12 @@ export default function NewTrackerPage() {
         });
         if (historyError) throw historyError;
       }
+      track("tracker_created", {
+        category,
+        scheduled: frequencyUnit !== "none" && frequencyValue > 0,
+        has_last_done: Boolean(timestamp),
+        shared_with_family: Boolean(shareWithFamily && householdId),
+      });
       router.replace(`/app/item/${tracker.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save this tracker."); setBusy(false);
