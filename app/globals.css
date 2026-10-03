@@ -126,3 +126,22 @@
 
 .authLegal{margin:18px 0 0;text-align:center;color:var(--muted);font-size:10px;line-height:1.5}
 .authLegal a{color:inherit}
+
+
+/* LT-013 mobile settings visibility */
+@media(max-width:700px){
+  .settingsLink{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:40px;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:white;
+    color:var(--ink);
+    font-size:12px;
+    font-weight:800;
+  }
+  .accountArea{gap:8px}
+}
