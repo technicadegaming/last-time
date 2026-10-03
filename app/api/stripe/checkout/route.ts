@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       client_reference_id: user.id,
       line_items: [{ price: priceId, quantity: 1 }],
       allow_promotion_codes: true,
-      success_url: `${origin}/app?checkout=success`,
+      success_url: `${origin}/app?checkout=success&interval=${interval}`,
       cancel_url: `${origin}/app/upgrade?checkout=cancelled`,
       metadata: { user_id: user.id, interval },
       subscription_data: { metadata: { user_id: user.id, interval } },
