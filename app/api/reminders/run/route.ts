@@ -39,7 +39,8 @@ async function sendEmail(to: string, subject: string, html: string) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error("RESEND_API_KEY is not configured.");
 
-  const from = process.env.REMINDER_FROM_EMAIL || "Last Time <onboarding@resend.dev>";
+  const from = process.env.REMINDER_FROM_EMAIL;
+  if (!from) throw new Error("REMINDER_FROM_EMAIL is not configured.");
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -57,11 +58,13 @@ async function sendEmail(to: string, subject: string, html: string) {
 
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = request.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!secret) {
+    return NextResponse.json({ error: "CRON_SECRET is not configured." }, { status: 500 });
+  }
+
+  const auth = request.headers.get("authorization");
+  if (auth !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
