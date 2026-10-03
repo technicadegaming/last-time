@@ -38,7 +38,7 @@ Legend:
 ## Live functional tests still required
 
 ### Billing
-- [ ] Plus account can create tracker #6 and beyond.
+- [x] Plus account can create tracker #6 and beyond. PASS — live user test confirmed more than 6 active trackers.
 - [ ] Monthly/annual checkout buttons point to intended live prices.
 - [ ] Cancel through Stripe portal and confirm Last Time subscription state updates correctly.
 - [ ] Re-subscription after cancellation behaves correctly.
