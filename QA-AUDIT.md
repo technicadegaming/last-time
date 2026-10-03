@@ -91,8 +91,8 @@ Legend:
 - [ ] Special characters in tracker title render safely in email.
 
 ### Data controls
-- [ ] Export downloads JSON.
-- [ ] Export contains account/profile/owned trackers/completions.
+- [x] Export downloads JSON. PASS — live user test confirmed download.
+- [x] Export contains account/profile/owned trackers/completions. PASS — user reviewed export and confirmed contents looked correct.
 - [ ] Export excludes other family members' private data.
 - [ ] Delete account cancels active Stripe subscription before deleting auth user.
 - [ ] Delete account cleans up owned trackers/history/profile through cascades.
