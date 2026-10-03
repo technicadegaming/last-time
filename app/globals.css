@@ -77,3 +77,49 @@
 .toggleCard p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
 .toggleCard input{width:20px;height:20px;accent-color:var(--accent)}
 @media(max-width:700px){.quickAddGrid{grid-template-columns:1fr 1fr}}
+
+
+/* LT-012 launch readiness */
+.benefitSection{padding-top:0;padding-bottom:34px}
+.benefitGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.benefitCard{background:white;border:1px solid var(--line);border-radius:20px;padding:22px}
+.benefitCard>span{font-size:24px}
+.benefitCard h3{margin:12px 0 7px;font-size:17px}
+.benefitCard p{margin:0;color:var(--muted);line-height:1.55;font-size:13px}
+.foundingTag{display:inline-flex;font-size:10px;letter-spacing:.12em;font-weight:800;border-radius:999px;padding:5px 8px;background:#eff8f2;color:#2f6b45;margin-bottom:8px}
+.pricingFine{text-align:center;color:var(--muted);font-size:11px;margin-top:14px}
+.footer{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.footerLinks{display:flex;gap:16px}
+.footerLinks a,.legalFooter a,.settingsLegal a{color:inherit;text-decoration:none}
+.footerLinks a:hover,.legalFooter a:hover,.settingsLegal a:hover{text-decoration:underline}
+.legalPage{max-width:860px;padding-top:34px;padding-bottom:60px}
+.legalBrand{display:inline-flex;margin-bottom:24px}
+.legalCard{background:white;border:1px solid var(--line);border-radius:24px;padding:clamp(24px,5vw,52px);box-shadow:0 12px 34px rgba(25,40,31,.04)}
+.legalCard h1{font-size:clamp(32px,5vw,48px);margin:6px 0 6px;letter-spacing:-.04em}
+.legalCard h2{font-size:19px;margin:30px 0 8px}
+.legalCard p{line-height:1.72;color:#3d4841}
+.legalCard a{color:#225f3a}
+.legalUpdated{font-size:12px;color:var(--muted)!important;margin-top:0}
+.legalFooter{display:flex;gap:16px;justify-content:center;padding:20px;color:var(--muted);font-size:12px}
+.memberList{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:16px}
+.memberRow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
+.memberRow>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.memberRow strong{font-size:13px;overflow:hidden;text-overflow:ellipsis}
+.memberRow span{font-size:11px;color:var(--muted)}
+.dangerText{color:#a2382c!important}
+.accountTools{display:flex;flex-direction:column;gap:12px}
+.accountTool{display:flex;align-items:center;justify-content:space-between;gap:20px;background:white;border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.accountTool>div{display:flex;flex-direction:column;gap:4px}
+.accountTool p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.dangerZone{border-color:#eed3cf;background:#fffafa}
+.dangerButton{background:#a2382c;color:white;border-color:#a2382c}
+.dangerButton:hover{background:#8d2e25}
+.settingsLegal{display:flex;justify-content:center;gap:9px;color:var(--muted);font-size:12px;margin:28px 0 8px}
+@media(max-width:760px){
+  .benefitGrid{grid-template-columns:1fr}
+  .navActions .navText:first-child{display:none}
+  .accountTool{align-items:stretch;flex-direction:column}
+  .accountTool .button{width:100%}
+  .footer{justify-content:center;text-align:center}
+  .legalCard{border-radius:18px;padding:24px 20px}
+}
