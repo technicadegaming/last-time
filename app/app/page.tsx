@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { cleanAuthFragment, getSupabaseBrowserClient } from "../../lib/supabase";
 import { daysUntilDue, nextDueText, relativeTime, type FrequencyUnit } from "../../lib/date";
 
@@ -90,7 +91,17 @@ export default function Dashboard() {
         for (let attempt = 0; attempt < 4 && !cancelled; attempt += 1) {
           const response = await fetch("/api/stripe/sync", { method: "POST", headers: { authorization: `Bearer ${token}` } });
           const result = await response.json();
-          if (response.ok && result.plan === "plus") { await load(); break; }
+          if (response.ok && result.plan === "plus") {
+            const interval = new URLSearchParams(window.location.search).get("interval") || "unknown";
+            const purchaseKey = `last-time-purchase:${interval}:${window.location.search}`;
+            if (!sessionStorage.getItem(purchaseKey)) {
+              track("plus_activated", { interval });
+              sessionStorage.setItem(purchaseKey, "1");
+            }
+            track("tracker_completed");
+      await load();
+            break;
+          }
           await new Promise((resolve) => setTimeout(resolve, 1500));
         }
       } finally {
@@ -151,8 +162,12 @@ export default function Dashboard() {
   }
 
   function addTracker() {
-    if (!plus && ownActiveCount >= 5) router.push("/app/upgrade?limit=1");
-    else router.push("/app/new");
+    if (!plus && ownActiveCount >= 5) {
+      track("free_limit_reached", { source: "dashboard" });
+      router.push("/app/upgrade?limit=1");
+    } else {
+      router.push("/app/new");
+    }
   }
 
   return (
