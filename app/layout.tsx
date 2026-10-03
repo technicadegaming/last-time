@@ -7,23 +7,23 @@ const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://lasttime.technicade.
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Last Time — Never wonder when you last did it",
-    template: "%s | Last Time",
+    default: "AgainDue — Never wonder when you last did it",
+    template: "%s | AgainDue",
   },
-  description: "A dead-simple life maintenance tracker for the things you do again eventually.",
+  description: "A simple shared maintenance memory for your home, car, pets, and family.",
   manifest: "/manifest.webmanifest",
-  applicationName: "Last Time",
+  applicationName: "AgainDue",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "Last Time",
-    title: "Last Time — Never wonder when you last did it",
-    description: "Track the recurring stuff in life, remember the last time, and get reminded when it is due again.",
+    siteName: "AgainDue",
+    title: "AgainDue — Never wonder when you last did it",
+    description: "Remember what was done, when it happened, and what is due again across your household.",
   },
   twitter: {
     card: "summary",
-    title: "Last Time — Never wonder when you last did it",
+    title: "AgainDue — Never wonder when you last did it",
     description: "Track the recurring stuff in life, remember the last time, and get reminded when it is due again.",
   },
 };
