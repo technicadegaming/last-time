@@ -1,20 +1,20 @@
 export const metadata = {
-  title: "Privacy Policy — AgainDue",
-  description: "Privacy Policy for AgainDue.",
+  title: "Privacy Policy — DoneDate",
+  description: "Privacy Policy for DoneDate.",
 };
 
 export default function PrivacyPage() {
   return (
     <main className="legalPage shell">
-      <a className="brand legalBrand" href="/">↺ <span>AgainDue</span></a>
+      <a className="brand legalBrand" href="/">↺ <span>DoneDate</span></a>
       <article className="legalCard">
         <p className="eyebrow">Legal</p>
         <h1>Privacy Policy</h1>
         <p className="legalUpdated">Effective October 2, 2026</p>
 
         <p>
-          AgainDue is a simple reminder and life-maintenance tracking service operated under the
-          Technicade brand. This policy explains what information AgainDue processes, why it is
+          DoneDate is a simple reminder and life-maintenance tracking service operated under the
+          Technicade brand. This policy explains what information DoneDate processes, why it is
           used, and the choices available to you.
         </p>
 
@@ -24,7 +24,7 @@ export default function PrivacyPage() {
           tracker information you choose to enter, including titles, categories, dates, recurrence
           schedules, completion history, and family-sharing information; reminder preferences; and
           subscription status and billing identifiers. Payment card details are handled by Stripe
-          and are not stored by AgainDue.
+          and are not stored by DoneDate.
         </p>
 
         <h2>How we use information</h2>
@@ -36,7 +36,7 @@ export default function PrivacyPage() {
 
         <h2>Service providers</h2>
         <p>
-          AgainDue relies on service providers to operate the product. These currently include
+          DoneDate relies on service providers to operate the product. These currently include
           Supabase for authentication and database hosting, Vercel for application hosting, Stripe
           for subscriptions and payments, Resend for reminder email delivery, and Google when you
           choose Google sign-in. Those providers process information under their own terms and
@@ -45,7 +45,7 @@ export default function PrivacyPage() {
 
         <h2>Family sharing</h2>
         <p>
-          If you join a AgainDue family, trackers intentionally shared with that family are visible
+          If you join a DoneDate family, trackers intentionally shared with that family are visible
           to family members. Shared completion history may identify which family member marked an
           item complete. Do not place sensitive information in a shared tracker unless you intend
           for other family members to see it.
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
         <p>
           Your account data is generally retained while your account remains active. You can export
           your data or permanently delete your account from Settings. Account deletion removes your
-          AgainDue account and associated application data from the active service. Payment
+          DoneDate account and associated application data from the active service. Payment
           processors and infrastructure providers may retain records when required for security,
           fraud prevention, accounting, or legal compliance.
         </p>
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
         <h2>Email reminders</h2>
         <p>
           Reminder emails are service messages requested through your tracker schedules. You can
-          turn email reminders off in Settings. AgainDue does not sell your personal information
+          turn email reminders off in Settings. DoneDate does not sell your personal information
           to advertisers.
         </p>
 
@@ -84,14 +84,14 @@ export default function PrivacyPage() {
 
         <h2>Children</h2>
         <p>
-          AgainDue is not directed to children under 13. Family organizers should not create
+          DoneDate is not directed to children under 13. Family organizers should not create
           accounts for children under 13 without determining that doing so is lawful and
           appropriate for their situation.
         </p>
 
         <h2>Changes</h2>
         <p>
-          This policy may be updated as AgainDue changes. Material updates will be reflected by a
+          This policy may be updated as DoneDate changes. Material updates will be reflected by a
           new effective date on this page.
         </p>
 
