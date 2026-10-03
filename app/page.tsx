@@ -5,22 +5,35 @@ const examples = [
   ["🐕", "Dog medicine", "29 days ago"],
 ];
 
+const benefits = [
+  ["✓", "Due-date reminders", "Get an email when a scheduled item becomes due or overdue."],
+  ["👨‍👩‍👧‍👦", "Family sharing", "Share selected trackers with the people you live with."],
+  ["🎙", "Fast capture", "Type it, use a quick-add preset, or speak it on supported browsers."],
+];
+
 export default function Home() {
   return (
     <main>
       <nav className="nav shell">
-        <a className="brand" href="#">↺ <span>Last Time</span></a>
-        <div className="navActions"><a className="navText" href="#pricing">Pricing</a><a className="button ghost" href="/app">Open app</a></div>
+        <a className="brand" href="/">↺ <span>Last Time</span></a>
+        <div className="navActions">
+          <a className="navText" href="#how">How it works</a>
+          <a className="navText" href="#pricing">Pricing</a>
+          <a className="button ghost" href="/app">Open app</a>
+        </div>
       </nav>
 
       <section className="hero shell">
         <div className="heroCopy">
           <p className="eyebrow">Life has maintenance.</p>
           <h1>Never wonder <em>“When did I last…?”</em> again.</h1>
-          <p className="lead">Oil changes. Furnace filters. Haircuts. Dog meds. Deep cleans. Add it once, tap when you do it, and Last Time remembers the rest.</p>
+          <p className="lead">
+            Oil changes. Furnace filters. Haircuts. Dog meds. Deep cleans.
+            Add it once, tap when you do it, and Last Time remembers the rest.
+          </p>
           <div className="actions">
             <a className="button primary" href="/app">Start remembering — free</a>
-            <span className="fine">No credit card required</span>
+            <span className="fine">No credit card required · 5 active trackers free</span>
           </div>
         </div>
 
@@ -34,7 +47,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section shell">
+      <section className="section shell" id="how">
         <div className="sectionHead">
           <p className="eyebrow">Remember anything</p>
           <h2>One tiny place for all the stuff you repeat.</h2>
@@ -49,13 +62,37 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="benefitSection shell">
+        <div className="benefitGrid">
+          {benefits.map(([icon, title, copy]) => (
+            <article className="benefitCard" key={title}>
+              <span>{icon}</span>
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="landingPricing shell" id="pricing">
         <p className="eyebrow">Simple pricing</p>
         <h2>Try it free. Upgrade only when you need more.</h2>
         <div className="landingPriceGrid">
-          <article><strong>Free</strong><div className="landingPrice">$0</div><p>Up to 5 active trackers. No card required.</p><a className="button ghost full" href="/app">Start free</a></article>
-          <article className="highlight"><strong>Plus</strong><div className="landingPrice">$14.99 <span>/ year</span></div><p>Unlimited active trackers. Also $1.99 month-to-month.</p><a className="button primary full" href="/app/upgrade">Get Plus</a></article>
+          <article>
+            <strong>Free</strong>
+            <div className="landingPrice">$0</div>
+            <p>Up to 5 active trackers. Email reminders. No card required.</p>
+            <a className="button ghost full" href="/app">Start free</a>
+          </article>
+          <article className="highlight">
+            <div className="foundingTag">FOUNDING PRICE</div>
+            <strong>Plus</strong>
+            <div className="landingPrice">$14.99 <span>/ year</span></div>
+            <p>Unlimited active trackers, family sharing, and everything in Free. Also $1.99 month-to-month.</p>
+            <a className="button primary full" href="/app/upgrade">Get Plus</a>
+          </article>
         </div>
+        <p className="pricingFine">Subscriptions renew automatically until canceled. Manage billing anytime from Settings.</p>
       </section>
 
       <section className="simple shell">
@@ -64,7 +101,10 @@ export default function Home() {
         <a className="button primary" href="/app">Try Last Time</a>
       </section>
 
-      <footer className="shell footer">© 2026 Last Time · Built to remember the boring stuff.</footer>
+      <footer className="shell footer">
+        <span>© 2026 Last Time · A Technicade product.</span>
+        <span className="footerLinks"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:support@technicade.tech">Support</a></span>
+      </footer>
     </main>
   );
 }
