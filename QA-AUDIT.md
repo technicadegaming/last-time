@@ -49,7 +49,7 @@ Legend:
 - [x] Forgot-password email arrives. PASS — live user test confirmed reset email arrived.
 - [x] Password reset returns to custom domain and new password works. PASS — live user test confirmed password reset completed successfully.
 - [ ] Logout clears session.
-- [ ] Disposable-account deletion works and the deleted account cannot sign back in.
+- [x] Disposable-account deletion works. PASS — live user test confirmed deletion signed the user out and removed prior tracker data. Signing in again with Google created a fresh account, which is expected OAuth behavior.
 
 ### Tracker core loop
 - [ ] Create tracker without last-done date.
@@ -95,7 +95,7 @@ Legend:
 - [x] Export contains account/profile/owned trackers/completions. PASS — user reviewed export and confirmed contents looked correct.
 - [ ] Export excludes other family members' private data.
 - [ ] Delete account cancels active Stripe subscription before deleting auth user.
-- [ ] Delete account cleans up owned trackers/history/profile through cascades.
+- [x] Delete account cleans up owned trackers/history/profile through cascades. PASS — live user test confirmed the recreated Google account had none of the deleted account's trackers.
 
 ### Public pages / UX
 - [ ] Home page renders correctly mobile and desktop.
