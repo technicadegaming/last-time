@@ -35,6 +35,15 @@ function prettyDate(date: Date) {
   }).format(date);
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 async function sendEmail(to: string, subject: string, html: string) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error("RESEND_API_KEY is not configured.");
@@ -98,12 +107,33 @@ export async function GET(request: Request) {
       let recipientIds = [tracker.user_id];
 
       if (tracker.household_id) {
-        const { data: members } = await supabase
-          .from("household_members")
-          .select("user_id")
-          .eq("household_id", tracker.household_id);
+        const { data: household } = await supabase
+          .from("households")
+          .select("owner_id")
+          .eq("id", tracker.household_id)
+          .maybeSingle();
 
-        if (members?.length) recipientIds = members.map((member) => member.user_id);
+        let familyPlusActive = false;
+        if (household?.owner_id) {
+          const { data: ownerProfile } = await supabase
+            .from("profiles")
+            .select("plan,subscription_status")
+            .eq("user_id", household.owner_id)
+            .maybeSingle();
+
+          familyPlusActive =
+            ownerProfile?.plan === "plus" &&
+            ["active", "trialing"].includes(ownerProfile.subscription_status ?? "");
+        }
+
+        if (familyPlusActive) {
+          const { data: members } = await supabase
+            .from("household_members")
+            .select("user_id")
+            .eq("household_id", tracker.household_id);
+
+          if (members?.length) recipientIds = [...new Set(members.map((member) => member.user_id))];
+        }
       }
 
       const { data: profiles } = await supabase
@@ -134,10 +164,11 @@ export async function GET(request: Request) {
           ? `Last Time reminder: ${tracker.title} is overdue`
           : `Last Time reminder: ${tracker.title} is due today`;
 
+        const safeTitle = escapeHtml(tracker.title);
         const html = `
           <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#17201b">
             <h2 style="margin-bottom:8px">↺ Last Time</h2>
-            <h1 style="font-size:26px;margin:0 0 16px">${tracker.title}</h1>
+            <h1 style="font-size:26px;margin:0 0 16px">${safeTitle}</h1>
             <p style="font-size:16px;line-height:1.5">
               ${overdue ? "This is overdue." : "This is due today."}
               The scheduled date was <strong>${prettyDate(due)}</strong>.
