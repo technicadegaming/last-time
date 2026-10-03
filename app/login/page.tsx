@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { cleanAuthFragment, getSupabaseBrowserClient } from "../../lib/supabase";
 
 type Mode = "signin" | "signup";
@@ -39,6 +40,7 @@ export default function LoginPage() {
     setMessage("");
 
     try {
+      track("google_auth_started", { destination: nextPath() });
       const supabase = getSupabaseBrowserClient();
       const redirectTo = `${window.location.origin}${nextPath()}`;
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
@@ -86,6 +88,7 @@ export default function LoginPage() {
         const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
         if (signUpError) throw signUpError;
 
+        track("signup_completed", { method: "email", immediate_session: Boolean(data.session) });
         if (data.session) {
           router.replace(nextPath());
         } else {
