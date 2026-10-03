@@ -17,7 +17,7 @@ Expected result: success with no SQL errors.
 From the local repository:
 
 ```powershell
-cd C:\Projects\donedate
+cd C:\Projects\last-time
 git pull
 npm run build
 ```
