@@ -1,9 +1,9 @@
-# Last Time — Production Launch Checklist
+# AgainDue — Production Launch Checklist
 
 This checklist is the remaining operator work after LT-012. The application code is configured to use:
 
 - Canonical app URL: https://lasttime.technicade.tech
-- Reminder sender: Last Time <reminders@technicade.tech>
+- Reminder sender: AgainDue <reminders@technicade.tech>
 - Support contact: support@technicade.tech
 
 ## 1. Database
@@ -26,7 +26,7 @@ Do not deploy a build that reports TypeScript or Next.js errors.
 
 ## 3. Vercel production domain
 
-In the Last Time Vercel project:
+In the AgainDue Vercel project:
 
 1. Add `lasttime.technicade.tech` under Settings -> Domains.
 2. Add the exact DNS record Vercel requests at the DNS provider for `technicade.tech`.
@@ -60,7 +60,7 @@ In Supabase -> Authentication -> URL Configuration:
 
 ## 5. Google OAuth
 
-In Google Cloud Console for the Last Time OAuth client, add:
+In Google Cloud Console for the AgainDue OAuth client, add:
 
 - Authorized JavaScript origin: `https://lasttime.technicade.tech`
 
@@ -72,7 +72,7 @@ Keep the Supabase callback URI already configured:
 The domain `technicade.tech` must remain verified.
 
 Set Vercel:
-`REMINDER_FROM_EMAIL=Last Time <reminders@technicade.tech>`
+`REMINDER_FROM_EMAIL=AgainDue <reminders@technicade.tech>`
 
 Run one authenticated manual reminder request after the custom-domain deployment and confirm delivery.
 
@@ -90,7 +90,7 @@ Perform one real live-mode purchase from the public app.
 Verify:
 
 1. Checkout completes successfully.
-2. The app returns to Last Time.
+2. The app returns to AgainDue.
 3. The account changes to Plus.
 4. Unlimited tracker behavior works.
 5. Manage Billing opens the Stripe Customer Portal.
@@ -149,7 +149,7 @@ The current `.gitignore` excludes local environment files.
 
 ## Launch gate
 
-Last Time is ready to actively promote when all of these are true:
+AgainDue is ready to actively promote when all of these are true:
 
 - Production build succeeds
 - Custom domain resolves over HTTPS
@@ -160,3 +160,17 @@ Last Time is ready to actively promote when all of these are true:
 - Delete-account works on a disposable account
 - Privacy and Terms pages are publicly reachable
 - support@technicade.tech receives mail
+
+
+## Brand transition (LT-017)
+
+The customer-facing product name is now **AgainDue**. The existing production URL
+`https://lasttime.technicade.tech` is a temporary legacy URL during the transition.
+
+Before paid promotion:
+- Add `againdue.technicade.tech` in Vercel and DNS.
+- Change `NEXT_PUBLIC_APP_URL` to `https://againdue.technicade.tech`.
+- Add the new URL to Supabase Auth redirect URLs and Google OAuth authorized origins.
+- Update Stripe public business name/product branding to AgainDue / AgainDue by Technicade.
+- Update REMINDER_FROM_EMAIL display name from Last Time to AgainDue.
+- Keep the old domain redirecting to the new domain during the transition.
