@@ -173,7 +173,7 @@ export default function Dashboard() {
   return (
     <main className="appShell shell">
       <header className="appHeader">
-        <a className="brand" href="/">↺ <span>Last Time</span></a>
+        <a className="brand" href="/">↺ <span>AgainDue</span></a>
         <div className="accountArea">
           <a className="settingsLink" href="/app/settings">Settings</a>
           <span className="accountEmail">{email}</span>
@@ -187,11 +187,11 @@ export default function Dashboard() {
         <button className="button primary add" onClick={addTracker}>+ Add something</button>
       </section>
 
-      {checkoutSuccess && <div className="formSuccess dashboardMessage">Payment received. {syncingBilling ? "Activating Last Time Plus…" : plus ? "Last Time Plus is active." : "Stripe is finishing the subscription sync."}</div>}
+      {checkoutSuccess && <div className="formSuccess dashboardMessage">Payment received. {syncingBilling ? "Activating AgainDue Plus…" : plus ? "AgainDue Plus is active." : "Stripe is finishing the subscription sync."}</div>}
       {error && <div className="formError dashboardMessage">{error}</div>}
 
       {!loading && <section className={`planStrip ${plus ? "plus" : "free"}`}>
-        <div><strong>{plus ? "Last Time Plus" : "Free plan"}</strong><span>{plus ? "Unlimited active trackers" : `${ownActiveCount} of 5 active trackers used`}</span></div>
+        <div><strong>{plus ? "AgainDue Plus" : "Free plan"}</strong><span>{plus ? "Unlimited active trackers" : `${ownActiveCount} of 5 active trackers used`}</span></div>
         {plus ? <span className="planBadge">PLUS</span> : <a href="/app/upgrade">Upgrade</a>}
       </section>}
 
