@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = (process.env.NEXT_PUBLIC_APP_URL || "https://lasttime.technicade.tech").replace(/\/$/, "");
+  const base = (process.env.NEXT_PUBLIC_APP_URL || "https://donedate.technicade.tech").replace(/\/$/, "");
   const now = new Date();
 
   return [
