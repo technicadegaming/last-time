@@ -81,7 +81,7 @@ export default function TrackerDetailPage() {
   if (!tracker) return <main className="appShell shell"><div className="formError">{error || "Tracker not found."}</div></main>;
 
   return <main className="appShell shell">
-    <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ Last Time</a></header>
+    <header className="appHeader"><a className="brand" href="/app">← <span>Back</span></a><a className="smallBrand" href="/">↺ DoneDate</a></header>
     {error && <div className="formError dashboardMessage">{error}</div>}
     <section className="detailHero">
       <div className="detailIcon">{tracker.emoji}</div><p className="eyebrow">{tracker.category}{tracker.household_id ? " · Family" : ""}</p><h1>{tracker.title}</h1>
