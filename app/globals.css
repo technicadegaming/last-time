@@ -145,3 +145,46 @@
   }
   .accountArea{gap:8px}
 }
+
+
+/* LT-019 final visual polish */
+.dashboardIntro{padding:42px 0 26px}
+.dashboardIntro h1{margin-bottom:20px}
+.add{margin-top:2px;padding:14px 21px;box-shadow:0 8px 22px rgba(23,32,27,.10)}
+.trackerGroups{gap:2px;margin-bottom:34px}
+.trackerGroup{margin:4px 0 9px}
+.panelTitle{margin-bottom:7px}
+.panelTitle h2{font-size:21px;font-weight:850;letter-spacing:-.02em}
+.panelTitle span{font-weight:850;color:#4e5b52;background:#e9ede9;padding:4px 8px}
+.tracker{padding:14px 15px;margin:7px 0;border-radius:16px}
+.trackerText{gap:3px}
+.trackerTitleRow>strong{font-size:15px;font-weight:850;line-height:1.25}
+.trackerText>span{font-size:13px;color:#59645d}
+.miniDone{padding:10px 13px}
+.formPage{padding-top:34px}
+.formPage h1{margin-bottom:22px}
+.formPage .trackerForm{max-width:700px;padding:26px;gap:17px;box-shadow:0 10px 32px rgba(18,38,25,.035)}
+.trackerForm legend{margin-bottom:9px}
+.categoryChoice,.preset,.quickAdd{transition:border-color .14s ease,background .14s ease,transform .14s ease}
+.categoryChoice:hover,.preset:hover,.quickAdd:hover{border-color:#a8c8b4}
+.categoryChoice.selected,.preset.selected{box-shadow:inset 0 0 0 1px rgba(31,122,77,.12)}
+.trackerForm>.primary{margin-top:2px;padding:15px 18px;background:var(--accent);box-shadow:0 8px 20px rgba(31,122,77,.16)}
+.trackerForm>.primary:hover{filter:brightness(.97)}
+.trackerForm>.primary:disabled{box-shadow:none}
+.detailHero{padding:36px 0 28px}
+.detailHero h1{margin-bottom:21px}
+.doneBig{box-shadow:0 9px 22px rgba(31,122,77,.14)}
+.detailPanel{margin:20px 0;padding:24px}
+.editPanel{margin-top:26px;border-top:3px solid #dcebe1}
+.editPanel h2{margin-bottom:8px}
+@media(max-width:600px){
+  .dashboardIntro{padding:30px 0 22px}
+  .dashboardIntro h1{margin-bottom:17px}
+  .add{width:100%;padding:14px 18px}
+  .tracker{padding:13px 12px;margin:6px 0;gap:11px}
+  .trackerIcon{width:41px;height:41px}
+  .trackerTitleRow>strong{font-size:15px}
+  .formPage{padding-top:28px}
+  .formPage .trackerForm{padding:20px 15px}
+  .detailPanel{padding:20px;margin:16px 0}
+}
