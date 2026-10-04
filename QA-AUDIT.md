@@ -68,12 +68,12 @@ Legend:
 - [ ] Archived tracker no longer counts toward active free limit.
 
 ### Family sharing
-- [ ] Plus owner creates family.
-- [ ] Invite link survives login/signup and joins second user.
-- [ ] Free invited member can join.
-- [ ] Shared tracker appears to both users.
+- [x] Plus owner creates family. PASS — live mobile test confirmed family setup works.
+- [x] Invite link survives login/signup and joins second user. PASS — live family test confirmed joining works.
+- [x] Free invited member can join. PASS — live family test confirmed.
+- [x] Shared tracker appears to both users. PASS — live family test confirmed shared access.
 - [ ] Private tracker remains private.
-- [ ] Member can mark shared tracker done.
+- [x] Member can mark shared tracker done. PASS — live family test confirmed core shared tracker interaction.
 - [ ] History displays the completing member.
 - [ ] Member cannot delete creator's tracker.
 - [ ] Owner can remove member.
