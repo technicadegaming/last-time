@@ -188,3 +188,11 @@
   .formPage .trackerForm{padding:20px 15px}
   .detailPanel{padding:20px;margin:16px 0}
 }
+
+
+/* LT-020 mobile readability touch-up */
+.smallBrand{font-size:14px;color:#566159}
+@media(max-width:600px){
+  .smallBrand{font-size:14px;font-weight:850;color:#4f5b53}
+  .trackerText>span{font-size:14px;line-height:1.35;color:#556158}
+}
