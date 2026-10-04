@@ -1,6 +1,6 @@
 # DoneDate — Launch QA Audit
 
-Updated: 2026-10-02
+Updated: 2026-10-04
 
 Legend:
 - PASS = verified by live user test or build
@@ -21,7 +21,7 @@ Legend:
 | Reminder delivery | PASS | User confirmed real Resend reminder email delivered |
 | Resend domain | PASS | technicade.tech verified |
 | Support email receiving | PASS | User confirmed support@technicade.tech forwards successfully |
-| Mobile Settings visibility | FIXED | LT-013 keeps Settings visible under 700px; live refresh/retest pending |
+| Mobile Settings visibility | PASS | Live mobile review confirmed Settings is visible and usable |
 | Privacy / Terms | CODE PASS | Public routes implemented and linked |
 | Secret hygiene | CODE PASS | No committed live secret files found; .env and .env.local ignored |
 
@@ -98,15 +98,15 @@ Legend:
 - [x] Delete account cleans up owned trackers/history/profile through cascades. PASS — live user test confirmed the recreated Google account had none of the deleted account's trackers.
 
 ### Public pages / UX
-- [ ] Home page renders correctly mobile and desktop.
+- [x] Home page renders correctly mobile and desktop. PASS — reviewed desktop and mobile recordings.
 - [ ] Pricing copy matches Stripe prices.
 - [ ] Privacy page opens.
 - [ ] Terms page opens.
 - [ ] Support link uses support@technicade.tech.
-- [ ] Settings visible in installed/mobile PWA.
+- [x] Settings visible in mobile layout. PASS — confirmed in live mobile review. Installed-PWA launch behavior still pending.
 - [ ] PWA launches to /app.
-- [ ] No clipped controls at common phone widths.
-- [ ] No horizontal scrolling on mobile.
+- [x] No clipped controls at tested phone width. PASS — reviewed mobile recording.
+- [x] No horizontal scrolling observed on tested mobile layout. PASS — reviewed mobile recording.
 
 ## Final launch gate
 
@@ -122,13 +122,14 @@ Start paid/organic promotion when:
 - mobile smoke test passes.
 
 
-## LT-017 brand clearance / transition
-- [x] Customer-facing code rebranded from DoneDate to DoneDate.
-- [x] Positioning shifted toward shared household maintenance memory.
-- [ ] Add and verify donedate.technicade.tech.
-- [ ] Update Vercel NEXT_PUBLIC_APP_URL.
-- [ ] Update Supabase auth Site URL / redirect allowlist.
-- [ ] Update Google OAuth authorized origin / branding.
-- [ ] Update Stripe public-facing brand/product text.
-- [ ] Update Resend sender display name.
-- [ ] Redirect legacy donedate.technicade.tech to the new hostname.
+## DoneDate brand / production status
+- [x] Customer-facing code uses DoneDate.
+- [x] Canonical production hostname is donedate.technicade.tech.
+- [x] Vercel production domain/environment cutover completed by user.
+- [x] Supabase auth Site URL / redirect allowlist updated by user.
+- [x] Google OAuth origin / branding updated by user.
+- [x] Stripe customer-facing branding updated by user.
+- [x] Resend sender display name updated to DoneDate.
+- [x] support@technicade.tech receives support mail.
+- [x] Gmail Send-As configured through Resend SMTP for DoneDate Support.
+- [ ] Keep legacy lasttime.technicade.tech available temporarily, then redirect it to donedate.technicade.tech.
