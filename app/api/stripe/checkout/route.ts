@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     if (profileError) throw profileError;
 
     if (["active", "trialing"].includes(profile?.subscription_status ?? "")) {
-      return NextResponse.json({ error: "Your account already has Last Time Plus." }, { status: 409 });
+      return NextResponse.json({ error: "Your account already has DoneDate Plus." }, { status: 409 });
     }
 
     let customerId = profile?.stripe_customer_id ?? null;
