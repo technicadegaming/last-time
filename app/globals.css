@@ -196,3 +196,21 @@
   .smallBrand{font-size:14px;font-weight:850;color:#4f5b53}
   .trackerText>span{font-size:14px;line-height:1.35;color:#556158}
 }
+
+
+/* LT-021 landing-page conversion clarity */
+.heroCopy .lead{max-width:620px}
+.heroUses{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.heroUses span{background:white;border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;color:#4f5b53}
+.heroSteps{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;color:#4f5b53;font-size:13px;font-weight:750}
+.heroSteps span{display:inline-flex;align-items:center;gap:7px}
+.heroSteps strong{width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:var(--accent2);color:#155f3b;font-size:12px}
+@media(max-width:800px){
+  .heroUses{margin-top:16px}
+  .heroSteps{gap:12px}
+}
+@media(max-width:520px){
+  .heroUses{gap:7px}
+  .heroUses span{font-size:11px;padding:6px 9px}
+  .heroSteps{display:grid;grid-template-columns:1fr;gap:8px}
+}
