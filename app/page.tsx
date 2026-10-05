@@ -25,15 +25,23 @@ export default function Home() {
 
       <section className="hero shell">
         <div className="heroCopy">
-          <p className="eyebrow">Shared maintenance memory.</p>
-          <h1>Keep your household maintenance <em>out of your head.</em></h1>
+          <p className="eyebrow">Remember it. Track it. Get reminded.</p>
+          <h1>Remember when you did it. <em>Know when it's due again.</em></h1>
           <p className="lead">
-            Oil changes. Furnace filters. Haircuts. Dog meds. Deep cleans.
-            Add it once, tap when you do it, and DoneDate keeps the shared maintenance memory for your home, car, pets, and family.
+            Oil changes. Furnace filters. Pet meds. Haircuts. Deep cleans.
+            Add it once, tap when it&apos;s done, and DoneDate keeps the history and reminds you when it&apos;s due again.
           </p>
+          <div className="heroUses" aria-label="DoneDate works for">
+            <span>Home</span><span>Car</span><span>Pets</span><span>Personal</span><span>Family</span>
+          </div>
           <div className="actions">
-            <a className="button primary" href="/app">Start remembering — free</a>
-            <span className="fine">No credit card required · 5 active trackers free</span>
+            <a className="button primary" href="/app">Start free — no card</a>
+            <span className="fine">5 active trackers free · Email reminders included</span>
+          </div>
+          <div className="heroSteps" aria-label="How DoneDate works">
+            <span><strong>1</strong> Add it</span>
+            <span><strong>2</strong> Tap when done</span>
+            <span><strong>3</strong> Get reminded</span>
           </div>
         </div>
 
@@ -50,7 +58,7 @@ export default function Home() {
       <section className="section shell" id="how">
         <div className="sectionHead">
           <p className="eyebrow">Remember anything</p>
-          <h2>One tiny place for all the stuff you repeat.</h2>
+          <h2>Everything you don&apos;t want to remember manually.</h2>
         </div>
         <div className="grid">
           {examples.map(([icon, title, time]) => (
