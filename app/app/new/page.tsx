@@ -32,8 +32,9 @@ const categories = [
 ] as const;
 
 const presets = [
-  ["none", 0, "No schedule"], ["week", 1, "Every week"], ["month", 1, "Every month"],
-  ["month", 3, "Every 3 months"], ["month", 6, "Every 6 months"], ["year", 1, "Every year"],
+  ["none", 0, "No schedule"], ["day", 1, "Every day"], ["week", 1, "Every week"],
+  ["month", 1, "Every month"], ["month", 3, "Every 3 months"], ["month", 6, "Every 6 months"],
+  ["year", 1, "Every year"],
 ] as const;
 
 const quickAdds = [
