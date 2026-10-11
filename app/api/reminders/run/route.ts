@@ -145,15 +145,22 @@ export async function GET(request: Request) {
       for (const profile of profiles ?? []) {
         if (!profile.email) continue;
 
-        const { data: alreadySent } = await supabase
+        // Reserve before sending so overlapping cron invocations cannot both email.
+        const { data: claims, error: claimError } = await supabase
           .from("reminder_deliveries")
-          .select("id")
-          .eq("tracker_id", tracker.id)
-          .eq("recipient_user_id", profile.user_id)
-          .eq("due_date", dueKey)
-          .maybeSingle();
-
-        if (alreadySent) {
+          .upsert({
+            tracker_id: tracker.id,
+            recipient_user_id: profile.user_id,
+            due_date: dueKey,
+            delivery_status: "pending",
+          }, {
+            onConflict: "tracker_id,recipient_user_id,due_date",
+            ignoreDuplicates: true,
+          })
+          .select("id");
+        if (claimError) throw claimError;
+        const claimId = claims?.[0]?.id;
+        if (!claimId) {
           skipped += 1;
           continue;
         }
@@ -184,13 +191,20 @@ export async function GET(request: Request) {
           </div>
         `;
 
-        await sendEmail(profile.email, subject, html);
+        try {
+          await sendEmail(profile.email, subject, html);
+        } catch (sendError) {
+          // A known send failure may be retried later. A crashed/unknown
+          // delivery remains pending for manual reconciliation, avoiding duplicates.
+          const { error: releaseError } = await supabase.from("reminder_deliveries")
+            .delete().eq("id", claimId).eq("delivery_status", "pending");
+          if (releaseError) console.error("Could not release failed reminder claim", releaseError);
+          throw sendError;
+        }
 
-        const { error: logError } = await supabase.from("reminder_deliveries").insert({
-          tracker_id: tracker.id,
-          recipient_user_id: profile.user_id,
-          due_date: dueKey,
-        });
+        const { error: logError } = await supabase.from("reminder_deliveries")
+          .update({ delivery_status: "sent", sent_at: new Date().toISOString() })
+          .eq("id", claimId).eq("delivery_status", "pending");
         if (logError) throw logError;
         sent += 1;
       }
