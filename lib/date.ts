@@ -24,14 +24,29 @@ export function formatDate(date: string | null) {
   }).format(new Date(date));
 }
 
-export function addFrequency(date: string, unit: FrequencyUnit, value: number) {
-  if (unit === "none" || value <= 0) return null;
-  const next = new Date(date);
-  if (unit === "day") next.setDate(next.getDate() + value);
-  if (unit === "week") next.setDate(next.getDate() + value * 7);
-  if (unit === "month") next.setMonth(next.getMonth() + value);
-  if (unit === "year") next.setFullYear(next.getFullYear() + value);
+// Calendar recurrence uses UTC day boundaries consistently in UI and email cron.
+// Clamp month/year dates to the last valid day of the target month.
+export function addFrequency(date: string | Date, unit: FrequencyUnit, value: number): Date | null {
+  if (unit === "none" || !Number.isInteger(value) || value <= 0) return null;
+  const source = new Date(date);
+  if (Number.isNaN(source.getTime())) return null;
+  const next = new Date(source);
+  if (unit === "day") next.setUTCDate(next.getUTCDate() + value);
+  if (unit === "week") next.setUTCDate(next.getUTCDate() + value * 7);
+  if (unit === "month" || unit === "year") {
+    const monthOffset = unit === "year" ? value * 12 : value;
+    const originalDay = next.getUTCDate();
+    next.setUTCDate(1);
+    next.setUTCMonth(next.getUTCMonth() + monthOffset);
+    const daysInTarget = new Date(Date.UTC(next.getUTCFullYear(), next.getUTCMonth()+1, 0)).getUTCDate();
+    next.setUTCDate(Math.min(originalDay, daysInTarget));
+  }
   return next;
+}
+
+function calendarDayDifference(due: Date, now = new Date()) {
+  const utcDay = (d: Date) => Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  return Math.round((utcDay(due) - utcDay(now)) / 86_400_000);
 }
 
 export function nextDueText(lastDone: string | null, unit: FrequencyUnit, value: number) {
@@ -39,10 +54,7 @@ export function nextDueText(lastDone: string | null, unit: FrequencyUnit, value:
   const next = addFrequency(lastDone, unit, value);
   if (!next) return "No reminder schedule";
 
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const due = new Date(next.getFullYear(), next.getMonth(), next.getDate()).getTime();
-  const days = Math.round((due - today) / 86_400_000);
+  const days = calendarDayDifference(next);
   if (days === 0) return "Due today";
   if (days === 1) return "Due tomorrow";
   if (days > 1) return `Due in ${days} days`;
@@ -67,8 +79,5 @@ export function daysUntilDue(lastDone: string | null, unit: FrequencyUnit, value
   const next = addFrequency(lastDone, unit, value);
   if (!next) return null;
 
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const due = new Date(next.getFullYear(), next.getMonth(), next.getDate()).getTime();
-  return Math.round((due - today) / 86_400_000);
+  return calendarDayDifference(next);
 }
