@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "../../../../lib/server";
+import { addFrequency } from "../../../../lib/date";
 
 type FrequencyUnit = "none" | "day" | "week" | "month" | "year";
 
@@ -12,15 +13,6 @@ type TrackerRow = {
   frequency_unit: FrequencyUnit;
   frequency_value: number;
 };
-
-function addFrequency(date: Date, unit: FrequencyUnit, value: number) {
-  const next = new Date(date);
-  if (unit === "day") next.setUTCDate(next.getUTCDate() + value);
-  if (unit === "week") next.setUTCDate(next.getUTCDate() + value * 7);
-  if (unit === "month") next.setUTCMonth(next.getUTCMonth() + value);
-  if (unit === "year") next.setUTCFullYear(next.getUTCFullYear() + value);
-  return next;
-}
 
 function dateKey(date: Date) {
   return date.toISOString().slice(0, 10);
@@ -95,7 +87,8 @@ export async function GET(request: Request) {
     for (const tracker of (trackerRows ?? []) as TrackerRow[]) {
       if (!tracker.last_done_at) continue;
 
-      const due = addFrequency(new Date(tracker.last_done_at), tracker.frequency_unit, tracker.frequency_value);
+      const due = addFrequency(tracker.last_done_at, tracker.frequency_unit, tracker.frequency_value);
+      if (!due) continue;
       const dueKey = dateKey(due);
 
       // Send once when due or overdue. The same due date will not be sent twice.
