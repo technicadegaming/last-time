@@ -33,7 +33,11 @@ export async function POST(request: Request) {
       event.type === "customer.subscription.paused" ||
       event.type === "customer.subscription.resumed"
     ) {
-      await syncSubscription(event.data.object as Stripe.Subscription);
+      // Stripe does not guarantee webhook delivery order. Re-read the current
+      // subscription so an older event cannot overwrite a newer status.
+      const incoming = event.data.object as Stripe.Subscription;
+      const current = await stripe.subscriptions.retrieve(incoming.id);
+      await syncSubscription(current);
     }
 
     if (event.type === "invoice.payment_failed") {
